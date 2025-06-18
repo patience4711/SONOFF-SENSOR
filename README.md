@@ -10,7 +10,9 @@ The software has some interesting features:
 - A lot of system info on the webinterface.
 - switch based on sensor readings, manual or via 4 timers 
 
-  ![frontpage](https://github.com/user-attachments/assets/80ca500e-1aaa-4897-a1f6-de6520d11f89)
-
 june 16 2025: There is a new version v10 available.
 Download [sonoff_v10_generic.bin](https://github.com/patience4711/SONOFF-SENSOR/blob/main/sonoff-v10_generic.bin)
+
+![frontpage](https://github.com/user-attachments/assets/80ca500e-1aaa-4897-a1f6-de6520d11f89)
+
+![senor_wiring](https://github.com/user-attachments/assets/1e1d2c17-047f-48ed-ae2b-7b7a788d9b02)
