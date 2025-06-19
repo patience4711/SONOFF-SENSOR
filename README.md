@@ -1,6 +1,6 @@
 # SONOFF-SENSOR
-The sonoff is a very intersting device and has the possibility to install custom software. This way we can make use of another feature: We can connect sensors like f.i a BME 280. Now we can setup a thermostate or a hydrostate.  With this program installed on a Sonoff it is very easy to do that. 
-The only thing you have to do is connect a sensor and make some adjustments in the settings, done via the webinterface.
+The sonoff is a very interesting device because it has the possibility to install custom software. This way we can make use of another feature: We can connect sensors like f.i a BME 280. Now we can setup a thermostate or a hydrostate.  With this program installed on a Sonoff it is very easy to do that. 
+The only thing you have to do is connect a sensor with 4 wires, and make some adjustments in the settings, done via the webinterface.
 The software has some interesting features:
 - actual sensor readings are displayed on the frontpage
 - Simply to connect to your wifi
@@ -11,7 +11,7 @@ The software has some interesting features:
 - switch based on sensor readings, manual or via 4 timers 
 - Temperature/humidity/pressure/light/motion/touch sensors can be connected.
 - It can work with any digital sensor (sound/rain/tilt and more)
-
+- 4 different ways to communicate with the device
 i made this software some years ago, but recently i completely overhauled it. Its more mobile freindly now and the userinterface
 has a lot of improvements.
 
@@ -20,4 +20,4 @@ Download [sonoff_v10_generic.bin](https://github.com/patience4711/SONOFF-SENSOR/
 
 ![frontpage](https://github.com/user-attachments/assets/80ca500e-1aaa-4897-a1f6-de6520d11f89)
 
-![senor_wiring](https://github.com/user-attachments/assets/1e1d2c17-047f-48ed-ae2b-7b7a788d9b02)
+
