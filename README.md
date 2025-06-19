@@ -11,12 +11,14 @@ The software has some interesting features:
 - switch based on sensor readings, manual or via 4 timers 
 - Temperature/humidity/pressure/light/motion/touch sensors can be connected.
 - It can work with any digital sensor (sound/rain/tilt and more)
-- 4 different ways to communicate with the device
-i made this software some years ago, but recently i completely overhauled it. Its more mobile freindly now and the userinterface
+- 4 different ways to communicate with the device<br>
+- a log of the events like 'time, switched-on, by who'<br>
+
+i made this software some years ago, but recently i completely overhauled it. Its more mobile friendly now and the userinterface
 has a lot of improvements.
 
-june 16 2025: There is a new version v10 available.
-Download [sonoff_v10_generic.bin](https://github.com/patience4711/SONOFF-SENSOR/blob/main/sonoff-v10_generic.bin)
+june 16 2025: There is a new version v11 available.
+Download [sonoff_v11,ino.generic.bin](https://github.com/patience4711/SONOFF-SENSOR/blob/main/sonoff-v11.ino.generic.bin)
 
 ![frontpage](https://github.com/user-attachments/assets/80ca500e-1aaa-4897-a1f6-de6520d11f89)
 
