@@ -131,12 +131,13 @@ document.getElementById('hiddendiv').innerHTML="<marquee><kop>updating software,
 }
 </script></head>
 <body><div id='main'>
-<center><kop> HANSIART FIRMWARE UPDATER</kop>
+<br><br><center><kop> HANSIART FIRMWARE UPDATER</kop>
 <br><br><br><table><tr><td>
 <form method='POST' action='/handleFwupdate' enctype='multipart/form-data' onsubmit='showDiv()'>
 <input id='inP' type='file' name='update' pattern='\S+' title='cannot be empty' required>
 <tr><td><br><tr><td><input type='submit' value='update'></form>
-<tr><td><br><tr><td><a href='/BASISCONFIG'><input type='submit' value='cancel'></a></table><br>
+<tr><td><br><tr><td><input type='submit' value='cancel' onclick="location.href = '/MENU';"></table><br>
+</table><br>
 <div id='hiddendiv' style='margin: 50px; width: 40%; background:#e7f2bd;'></div><br><br>
 </div></center></body></html>  
 )=====";

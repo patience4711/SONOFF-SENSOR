@@ -23,7 +23,7 @@ a:link, a:visited { width: 98px;}
   <tr><td style="width:100px"><a href='/LOGPAGE'>log</a></td><td style="width:60px"></td><td style="width:100px">
   <a href='/MQTT'>mosquitto</a></<td></tr>
   
-  <tr><td style="width:100px"><a href='/SENSOR'>sensors</a></td><td style="width:60px"></td><td style="width:100px">
+  <tr><td style="width:100px"><a href='/SENSOR?welke=16'>sensors</a></td><td style="width:60px"></td><td style="width:100px">
   <a href='/GEOCONFIG'>time config</a></<td></tr>
     
   <tr><td style="width:100px"><a href='/BASISCONFIG'>settings</a></li></td><td style="width:60px"></td><td style="width:100px">

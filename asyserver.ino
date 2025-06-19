@@ -71,17 +71,6 @@ server.on("/", HTTP_GET, [](AsyncWebServerRequest *request) {
     request->send_P(200, "text/html", HOMEPAGE );
 });
 
-//server.on("/SW=BACK", HTTP_GET, [](AsyncWebServerRequest *request) {
-//    //if (!request->authenticate("admin", pswd) && !request->authenticate("user", userPaswd)  ) return request->requestAuthentication();
-//    loginBoth(request, "both");
-//    //    zendPageHome();
-//    //    request->send(200, "text/html", toSend);
-//    consoleOut("de requestUrl = " + String(requestUrl));
-//    request->redirect( requestUrl );
-//    //request->send(302, "text/plane", "");
-//
-//});
-
 server.on("/STYLESHEET", HTTP_GET, [](AsyncWebServerRequest *request) {
    request->send_P(200, "text/css", STYLESHEET);
 });
@@ -192,7 +181,7 @@ server.on("/STARTAP", HTTP_GET, [](AsyncWebServerRequest *request) {
 //    if (!request->authenticate("admin", pswd)) return request->requestAuthentication();
         loginBoth(request, "admin");
         consoleOut("erase the wifi data");
-        String toSend = F("<!DOCTYPE html><html><head><script type='text/javascript'>setTimeout(function(){ window.location.href='/'; }, 5000 ); </script>");
+        String toSend = F("<!DOCTYPE html><html><style>body {font-size:44px;}</style><head><script type='text/javascript'>setTimeout(function(){ window.location.href='/'; }, 5000 ); </script>");
         toSend += F("</head><body><center><h2>OK the accesspoint is started.</h2>Wait unil the led goes on.<br><br>Then go to the wifi-settings on your pc/phone/tablet and connect to ");
         toSend += getChipId(false) + " !";
         request->send ( 200, "text/html", toSend ); //zend confirm
@@ -220,6 +209,7 @@ server.on("/SENSOR", HTTP_GET, [](AsyncWebServerRequest *request) {
     int i = atoi(request->arg("welke").c_str()) ;
     tKeuze = i;
     DebugPrint("tKeuze is "); DebugPrintln(i);
+    strcpy( requestUrl, request->url().c_str() );
     //nu roepen we zendpageRelevant aan
     zendPageRelevantSensors(); 
     request->send(200, "text/html", toSend); //send the html code to the client
@@ -227,7 +217,7 @@ server.on("/SENSOR", HTTP_GET, [](AsyncWebServerRequest *request) {
 
 server.on("/SENSORCONFIG", HTTP_GET, [](AsyncWebServerRequest *request) {
     loginBoth(request, "both");
-    strcpy( requestUrl, request->url().c_str() ); // remember this to come back after reboot
+    //strcpy( requestUrl, request->url().c_str() ); // remember this to come back after reboot
     zendPageSensors();
     request->send( 200, "text/html", toSend );
 });
@@ -238,9 +228,11 @@ server.on("/SENSORCONFIG", HTTP_GET, [](AsyncWebServerRequest *request) {
 //});
 
 server.on("/METEN", HTTP_GET, [](AsyncWebServerRequest *request) {
-    meetENschakel();
-    confirm();
-    request->send( 200, "text/html", toSend );
+    if (!diagNose) {
+      meetENschakel(); 
+      confirm();
+      request->send( 200, "text/html", toSend );
+    } else { request->send(200, "text/plain", "this is not possible in debug mode, go back <-");}
     });
 
 server.on("/SW=OFF", HTTP_GET, [](AsyncWebServerRequest *request) {
@@ -277,7 +269,7 @@ server.on("/get.Homepagedata", HTTP_GET, [](AsyncWebServerRequest *request) {
     int state = value;
     if(state > 1) state = 1;    
     // set the array into a json object
-    // in sensor[0] we find a int that reflects the sensor
+    // in senSor we find a int that reflects the sensor
     // 1 = DS18B20 2 = dht11 3 bme280 4=motion 5=button 6=MAX44009 7=digital
     AsyncResponseStream *response = request->beginResponseStream("application/json");
     //StaticJsonDocument<160> doc; //(160);
@@ -290,7 +282,7 @@ server.on("/get.Homepagedata", HTTP_GET, [](AsyncWebServerRequest *request) {
     root["state"] = String(state); // 0 or 1
     root["rm"] = remote;
 
-    switch (atoi(sensor))  {
+    switch (senSor)  {
       case 0: root["sensor"]="none"; root["unit"]="&#8451;"; break;     
       case 1: 
           root["sensor"]="DS18B20" ;
@@ -325,6 +317,61 @@ server.on("/get.Homepagedata", HTTP_GET, [](AsyncWebServerRequest *request) {
     serializeJson(root, * response);
     request->send(response);
 });
+
+//server.on("/get.Debugdata", HTTP_GET, [](AsyncWebServerRequest *request) {     
+//
+//    uint8_t remote = 0;
+//    if(checkRemote( request->client()->remoteIP().toString()) ) remote = 1; // for the menu link
+//    int state = value;
+//    if(state > 1) state = 1;    
+//    // set the array into a json object
+//    // in senSor we find a int that reflects the sensor
+//    // 1 = DS18B20 2 = dht11 3 bme280 4=motion 5=button 6=MAX44009 7=digital
+//    AsyncResponseStream *response = request->beginResponseStream("application/json");
+//    //StaticJsonDocument<160> doc; //(160);
+//    DynamicJsonDocument root(240); //(160);
+//
+// 
+//    root["temp"] = String(temp_c);
+//    root["switchHL[0]"] = String(switchHL[0]); // 0 or 1
+//    root["wwitcjrm"] = remote;
+//
+//    switch (atoi(sensor))  {
+//      case 0: root["sensor"]="none"; root["unit"]="&#8451;"; break;     
+//      case 1: 
+//          root["sensor"]="DS18B20" ;
+//          root["readings"] = String(temp_c, 1); 
+//          root["unit"]="&#8451;";
+//          break;
+//      case 2: 
+//          root["sensor"]="DHT11"; 
+//          root["readings"]= String(temp_c, 1) + " / " + String(humidity, 1); 
+//          root["unit"]="&#8451; / %";
+//          break;
+//      case 3: 
+//         root["sensor"]="BME280";
+//         root["readings"]=String(temp_c, 1) + " / " + String(humidity, 1)  + " / " + String(p, 1); 
+//         root["unit"]="&#8451; / % /hPa";        
+//         break;
+//      case 4: 
+//         root["sensor"]="motion"; 
+//         if(value == 18) root["readings"] = "1"; else root["readings"] = "0"; 
+//         root["unit"]="1 / 0";
+//         break;
+//      case 5: root["sensor"]= "button"; root["readings"] = "0"; root["unit"]="1 / 0"; break;
+//      case 6: 
+//         root["sensor"]="MAX4409"; 
+//         root["readings"] = String(p, 1);  
+//         root["unit"]="lux"; 
+//         break;
+//      case 7: root["sensor"]="digital"; root["readings"] = "0"; root["unit"]="1 / 0"; 
+//    }    
+//    //request->send(200, "text/json", json);
+//    //json = String();
+//    serializeJson(root, * response);
+//    request->send(response);
+//});
+
 // if everything failed we come here
 server.onNotFound([](AsyncWebServerRequest *request){
   Serial.println("unknown request");
@@ -347,7 +394,7 @@ void loginBoth(AsyncWebServerRequest *request, String who) {
 }
 
 void confirm() {
-toSend="<html><body onload=\"setTimeout(function(){window.location.href='/';}, 3000 );\"><br><br><center><h3>processing<br>your request,<br>please wait</html>";
+toSend="<html><style>body {font-size:64px;}</style><body onload=\"setTimeout(function(){window.location.href='/';}, 3000 );\"><br><br><center>processing<br>your request,<br>please wait</body></html>";
 }
 
 //} check value

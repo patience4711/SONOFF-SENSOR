@@ -11,15 +11,17 @@ void handleForms(AsyncWebServerRequest *request) {
          strcpy(userPasswd, request->arg("pw1").c_str());
          strcpy(dvName, request->arg("dvName").c_str());
          strcpy(aso, request->arg("bev").c_str());
+         bool changeCheck = diagNose;
          if(request->hasParam("debug")) diagNose = true;  else diagNose = false;          
-
+          
           if (dvName[0] == '\0') {
                String s = "ESP-" + String(ESP.getChipId());
                s.toCharArray(dvName, 21);
           }
-     strcpy(timer, request->arg("timer").c_str());
+     autoMate = request->arg("autoMate").toInt();
+     //strcpy(timer, request->arg("timer").c_str());
    // if this is not 1 than we have to disable all timers
-   if(timer[0] != '1') {
+   if(autoMate != 1) {
       for (int z = 0; z<TIMERCOUNT; z++) timerActive[z] = '0';
       timerConfigsave();
    }
@@ -27,6 +29,7 @@ void handleForms(AsyncWebServerRequest *request) {
          // check if there is a mismatch between the sensor and the automatition 
          // if so, timer becomes 0
          check_mismatch();
+         if (changeCheck!=diagNose) actionFlag = 10;  //diagnose was changed so reboot
          return; 
      } else 
 
@@ -60,15 +63,7 @@ void handleForms(AsyncWebServerRequest *request) {
           char tempChar[1] = "";
           String temp = "";
           //ledState = 0; // prevent slow down
-          if( request->hasParam("ta") )  timerActive[tKeuze] = '1';  else timerActive[tKeuze] = '0';
-
-//             temp = request->arg("prg").c_str(); // args are 0 to 6
-//             temp.toCharArray(tempChar, 2);
-//             defaultProg[tKeuze]=tempChar[0];  // revise the variable defaultProg            
-//             //strcpy(defaultProg[tKeuze], request->arg("prg"));
-//             consoleOut("defaultProg set to " + String(defaultProg));
-//          }
-          
+          if( request->hasParam("ta") )  timerActive[tKeuze] = '1';  else timerActive[tKeuze] = '0';          
           // first put back what is selected in sonnataan and zonnatuit
           temp = "";
           tempChar[0] = '\0';
@@ -101,7 +96,7 @@ void handleForms(AsyncWebServerRequest *request) {
            // these functions work ok
            // now send the confirm 
            timerConfigsave(); // alles opslaan in SPIFFS
-           Serial.println("timer instellingen opgeslagen");
+           Serial.println("timer settings saved");
            actionFlag = 25; // recalculate the timmers
            return;
     }     
@@ -113,13 +108,15 @@ void handleForms(AsyncWebServerRequest *request) {
           // thermostaat
              if (request->arg("tempHL") == "1") {
               switchHL[0] = '1'; } else {switchHL[0]='0';}
-              strcpy(switchTemp, request->arg("switchTemp").c_str());
+              //strcpy(switchTemp, request->arg("switchVal").c_str());
+             switchTemp = request->getParam("switchTemp")->value().toFloat();
              break;   
            case 12:    
           // hygrostaat
              if (request->arg("hygHL") == "1") {
                  switchHL[1] = '1'; } else {switchHL[1]='0';}
-             strcpy(switchMoist, request->arg("switchMoist").c_str());
+             //strcpy(switchMoist, request->arg("switchMoist").c_str());
+             switchMoist = request->getParam("switchMoist")->value().toFloat();
              break;
            case 13:    
           // motionsensor
@@ -130,7 +127,8 @@ void handleForms(AsyncWebServerRequest *request) {
           // lichtsensor
              if (request->arg("lichtHL") == "1") {
               switchHL[2] = '1'; } else {switchHL[2]='0';}   
-              strcpy(switchLicht, request->arg("switchLicht").c_str());
+              //strcpy(switchLicht, request->arg("switchLicht").c_str());
+              switchLicht = request->getParam("switchLicht")->value().toFloat();
              break;
            case 15:    
           // digital sensor
@@ -139,7 +137,8 @@ void handleForms(AsyncWebServerRequest *request) {
              break;
             case 16:    
           // sensor keuze en calibratie en meetresolutie
-             strcpy(sensor, request->arg("sensor").c_str());
+             //strcpy(sensor, request->arg("sensor").c_str());
+             senSor = request->arg("sensor").toInt();
              strcpy(tempCal, request->arg("tcal").c_str());
              meetRes = request->arg("mf").toInt();
              break;
@@ -149,10 +148,11 @@ void handleForms(AsyncWebServerRequest *request) {
            timerConfigsave(); // alles opslaan in SPIFFS
            basisConfigsave(); // voor sensor, tempcal en meetres 
            consoleOut("sensor settings saved");
-           actionFlag = 10; // reboot 
+           actionFlag = 25; // switch out, get time and measure sensor 
+           // the confirm is done by the original request submitForm
            return;   
          }
-//sent by sensor form formSubmit?sensorID=sensorID&sensor=1&tcal=%2B0.0&mf=180     
+     
      // if we are here something was wrong, no parameters found
      request->send(200, "text/html", "no valid form found");
 }

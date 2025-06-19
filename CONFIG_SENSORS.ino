@@ -242,14 +242,14 @@ void place_sensorpage() {
     if (tKeuze == 11) {
     // thermostaat 
         toSend.replace("<irame name>" , FPSTR(SENSOR_TS)); 
-        // het plusteken komt niet tevoorschijn bij temp_aan dus vallen we terug op de tempaan uit spiffs
-        DebugPrint("switchTemp = ");
-        DebugPrintln(String(switchTemp));
-        // de temperatuurgegevens terugzetten
-        if (sensor[0] == '1' || sensor[0] == '2' || sensor[0] == '3') {
+        consoleOut("switchTemp = " + String(switchTemp));
+
+        // show the thermometer readings
+        if (senSor == 1 || senSor == 2 || senSor == 3) {
            toSend.replace("n/a &#8451;" , String(temp_c,1) + " &#8451;");
         }
-        toSend.replace("value='+00'", "value='" + String(switchTemp) + "'");
+        //toSend.replace("value='+00'", "value='" + String(switchTemp) + "'");
+        toSend.replace("value='+00'", "value='" + String(switchTemp,1) + "'");
         if (switchHL[0] == '0') {
               toSend.replace("tempHL0" , "selected"); //hoger
         } else {
@@ -259,11 +259,12 @@ void place_sensorpage() {
     if (tKeuze == 12) {
     // hygrostaat 
         toSend.replace("<irame name>" , FPSTR(SENSOR_HS));
-        // de vochtigheidsgegevens terugzetten
-        if (sensor[0] == '2' || sensor[0] == '3') {
+        // show the humidity value
+        if (senSor == 2 || senSor == 3) {
         toSend.replace("n/a %" , String(humidity,1) + " %");
         }
-        toSend.replace("value='000A'", "value='" + String(switchMoist) + "'");
+        //toSend.replace("value='000A'", "value='" + String(switchMoist) + "'");
+        toSend.replace("value='000A'", "value='" + String(switchMoist, 1) + "'");
         if (switchHL[1] == '0') {
               toSend.replace("hygHL0" , "selected"); //hoger
         } else {
@@ -297,13 +298,14 @@ void place_sensorpage() {
     if (tKeuze == 14){
       //licht sensor
     toSend.replace("<irame name>" , FPSTR(SENSOR_LS));  
-     // de lichtgegevens terugzetten
-       if (sensor[0] == '6') {
+     // show the lux value
+       if ( senSor == 6) {
        toSend.replace("n/a Lux", String(p,1) + " Lux<br>");
        }
-       toSend.replace("{00000}", String(switchLicht));
+       //toSend.replace("{00000}", String(switchLicht));
+       toSend.replace("{00000}", String(switchLicht, 0 ));
        if (switchHL[2] == '0') {
-          toSend.replace("lichtHL0" , "selected"); //hoger
+          toSend.replace("lichtHL0" , "selected"); // hoger
        } else {
           toSend.replace("lichtHL1" , "selected"); // lager
        } 
@@ -323,33 +325,17 @@ void place_sensorpage() {
     if (tKeuze==16) { 
         //de gekozen sensor hardware
         toSend.replace("<irame name>" , FPSTR(SENSOR_WS));  
-        // de gekozen optie voor sensor terugzetten
-        switch (sensor[0]) {
-          case '0': // geen
-        toSend.replace ("sensor0", "selected");
-            break;
-          case '1': // bmp
-        toSend.replace ("sensor1", "selected");
-            break;
-          case '2': // dht 
-        toSend.replace ("sensor2", "selected");
-            break;
-          case '3': // bme
-        toSend.replace ("sensor3", "selected");
-            break;
-          case '4': // bewegingssensor
-        toSend.replace ("sensor4", "selected");
-            break;
-          case '5': // drukknop
-        toSend.replace ("sensor5", "selected");
-            break;
-          case '6': // light sensor
-        toSend.replace ("sensor6", "selected");
-            break; 
-          case '7': // digital sensor
-        toSend.replace ("sensor7", "selected");
-            break;      
-          }
+        // put back the selected option for senSor 
+        switch (senSor) {
+          case 0: toSend.replace ("sensor0", "selected"); break; // none
+          case 1: toSend.replace ("sensor1", "selected"); break;// bmp
+          case 2: toSend.replace ("sensor2", "selected"); break;// dht 
+          case 3: toSend.replace ("sensor3", "selected"); break; // bme
+          case 4: toSend.replace ("sensor4", "selected"); break;// bewegingssensor
+          case 5: toSend.replace ("sensor5", "selected"); break;// drukknop
+          case 6: toSend.replace ("sensor6", "selected"); break; // light sensor
+          case 7: toSend.replace ("sensor7", "selected");break;// digital sensor
+        }
         // domoticz link gegevens terugzetten
         toSend.replace("name='tcal' value='+00'", "name='tcal' value='" + String(tempCal) + "'");
         toSend.replace("name='mf' value='300'", "name='mf' value='" + String(meetRes) + "'");

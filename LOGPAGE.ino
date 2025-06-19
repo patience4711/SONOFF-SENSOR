@@ -8,15 +8,19 @@ const char HTML_LOGPAGE[] PROGMEM = R"=====(
 <style>
 #lijst {
   font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+  color: black;
   border-collapse: collapse;
   width: 98%;
-  font-size:2vw;
+  font-size:18;
 }
 #lijst td, #customers th {
   border: 1px solid #ddd;
   padding: 6px;
 }
 #lijst tr:nth-child(even){background-color: #f2f2f2;}
+#lijst tr td:nth-child(1) { font-size:14px; width:28%}
+#lijst tr td:nth-child(2) { font-size:14px; width:22%}
+#lijst tr td:nth-child(3) { font-size:14px; width:47%}
 
 #lijst th {
   padding-top: 5px;
@@ -30,6 +34,11 @@ tr {height:20px;}
 
 @media only screen and (max-width: 600px) {
 #lijst td, #customers th { padding: 4px;}
+#lijst {font-size:12px;} 
+#lijst tr td:nth-child(1) { width:32%}
+#lijst tr td:nth-child(2) { width:26%}
+#lijst tr td:nth-child(3) { width:40%}
+
 }
 
 </style>
@@ -39,7 +48,7 @@ tr {height:20px;}
 <div id='msect'>
   <div id='menu'>
   <a href="#" class='close' onclick='cl();'>&times;</a>
-  <a href='/INFOPAGE'>info</a>
+  <a href="#" onClick='window.location.reload();' >refresh</a>
   <a onclick="return confirm('wipe log, are you sure?')" href='/CLEAR_LOG'>wipe</a>
   </div>
 </div>
@@ -49,14 +58,12 @@ tr {height:20px;}
 
 <div id='msect'>
   <div class='divstijl'>
-  <table><tr><td style='width:240px;'>Last refresh : !@@!<td>
-  
-  <button onClick='window.location.reload();' style='height:40px; width:124px;'>Refresh</button></table><br>
+  <table><tr><td style='width:240px;'>Last refresh : !@@!<td></table><br>
   
   <table id='lijst'>
-  <tr><th style='width:28%;'>Time</th>
-  <th style='width:24%;'>Type</th>
-  <th style='width:47%;'>Command</th></tr> 
+  <tr><th>Time</th>
+  <th>Type</th>
+  <th>Command</th></tr> 
   <tr><td></td><td></td><td></td></tr>   
   <cont> 
   </tr><tr><td></td><td></td><td></td></tr>   

@@ -121,7 +121,7 @@ void mqttSwitchupdate()
   String Mess = "";
            
       int hum_stat; // reken een getal uit voor de vochtigheids statitstiek
-          if (sensor[0] == '2' || sensor[0] == '3'){
+          if (senSor == 2 || senSor == 3){
          // 0=normal 1 = comfortabel 2 = droog 3 = wet
                 if ( humidity > 70 ) { //nat
                   hum_stat = 3;
@@ -134,7 +134,7 @@ void mqttSwitchupdate()
                 }
            }
         //
-        if (sensor[0] == '3') { // de BME 280
+        if (senSor == 3) { // de BME 280
         
         // we moeten een waarde berekenen voor de weersvoorspelling aan de hand van de luchtdruk  
          bar_for = 0; // 3=bewoklt 1 = mooi 2 = half bew 4 = regen
@@ -148,28 +148,16 @@ void mqttSwitchupdate()
                   bar_for = 2;
                 }   
           Mess=String(temp_c,1) + ";" + String(humidity,1) + ";" + String(hum_stat) + ";" + String(p,1) + ";" + String(bar_for) + ";";        
-        }
+       }
  
-       if (sensor[0] == '2') 
-       {
-           Mess=String(temp_c,1) + ";" + String(humidity,1) + ";" + String(hum_stat) + ";";
-       }
+       if (senSor == 2) Mess=String(temp_c,1) + ";" + String(humidity,1) + ";" + String(hum_stat) + ";";
 
-       if (sensor[0] == '1') 
-       {
-          Mess = String(temp_c,1) + ";";
-       } 
-       
-       if (sensor[0] == '6') { //lightsensor sends lux
-           Mess = String(p,1) + ";"; 
-       }
-       
-       if(sensor[0]=='4' || sensor[0]=='7') //motion or digital
-       { 
-           Mess =  String(digitalRead(3));
-       } 
+       if (senSor == 1) Mess = String(temp_c,1) + ";";
+  
+       if ( senSor == 6 )  Mess = String(p,1) + ";"; //lightsensor sends lux
    
-   
+       if(senSor==4 || senSor==7) Mess =  String(digitalRead(3)); //motion or digital
+
       doc["svalue"] = Mess;
       DebugPrint("svalue in sendMqtt = "); 
       DebugPrintln(Mess);

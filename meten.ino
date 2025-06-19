@@ -4,33 +4,33 @@ void meetENschakel() {
   consoleOut("meet en schakel functie ");  
   DebugPrintln(minute());
 // als er een sensor aanwezig is dan meten we die voor domoticz 
-    if (sensor[0] == '0' || sensor[0] == '\0') {return;}
-    if (sensor[0] == '1' || sensor[0] == '2' || sensor[0] == '3' || sensor[0] == '6' || sensor[0] == '7') { // alleen als er een temperatuur of licht sensor is ingesteld
+    if (senSor == 0 ) return; // timers have been set
+    if (senSor == 1 || senSor == 2 || senSor == 3 || senSor == 6 || senSor == 7) { // alleen als er een temperatuur of licht sensor is ingesteld
           meten(); // stel de meetwaarde vast en verzend mqtt indien van toepassing
          // meteen ook schakelen. Dit kan alleen als er een thermo hygro licht digital is ingesteld
          // als er een foute meting is gedaan dan gaan we terug
          // foute metingen zijn temp_c 1000, 300, -172, p500000 
-         if (sensor[0] == '1' || sensor[0] == '2' || sensor[0] == '3') { 
+         if (senSor == 1 || senSor == 2 || senSor == 3) { 
             if ( temp_c == 1000 || temp_c == -127 ) {return;} // sla de thermostaat en mqtt verzending over
          }
-         if (sensor[0] == '6' && p == 500000) {
+         if (senSor == 6 && p == 500000) {
           DebugPrintln("lightsensor error p=500000" );
           return;}
          //nu hebben we alle foutmetingen afgevangen ook voor de luchtdruk, die is fout als de temperatuur fout is
          // de foute metingen worden niet gerapporteerd via mqtt en 'staten werken niet
-         if (timer[0] == '3' ) { // thermostaat
+         if (autoMate == 3 ) { // thermostaat
                  thermostaat(); // als er geschakeld is door de thermostaat dan zijn de gegevens niet verzonden
               }
 
-         if (timer[0] == '4' ) {
+         if (autoMate == 4 ) {
                  hygrostaat();  // als er geschakeld is door de thermostaat dan zijn de gegevens niet verzonden
               }
 
-         if ( timer[0] == '6' ) {
+         if ( autoMate == 6 ) {
             lichtSensor(); // als er geschakeld is door de thermostaat dan zijn de gegevens niet verzonden
           }
 
-         if (timer[0] == '7' ) {
+         if (autoMate == 7 ) {
              digitalSensor();
              }
      // de meetwaarden zijn nu bekend en als er een thermostaat actief is, ook geschakeld
@@ -46,33 +46,33 @@ void meten() {
   
   consoleOut("function meten, time is ");
   DebugPrintln(minute());
-          if(sensor[0] == '1') { 
+          if(senSor == 1) { 
                DebugPrintln("the ds18B20 is polled");
                sensors.requestTemperatures();
                temp_c = sensors.getTempCByIndex(0);
                temp_c = temp_c + atof(tempCal);
                //domoticz(0, true); 
                } // de ds18B20 sensor lezen
-          if(sensor[0] == '2') { 
+          if(senSor == 2) { 
                DebugPrintln("the dht22 is polled");
                gettemperature(); // de dh22sensor lezen
                temp_c = temp_c + atof(tempCal);
               // deze gegevens naar domoticz seinen
               // domoticz(0);
                } 
-           if(sensor[0] == '3') { 
-               DebugPrintln("the bme280 is polled");
+           if(senSor == 3) { 
+               consoleOut("the bme280 is polled");
                getWeather();
                temp_c = temp_c + atof(tempCal);
                if ( humidity == 0 ) {temp_c = 1000; } // als er geen vochtigheid is polled
                } 
 
-//           if( sensor[0] == '7' ) {
+//           if( senSor == 7 ) {
 //           if (digitalRead(3) == HIGH ) { domoticz(1, false); } else { domoticz(2, false); } 
 //           }
            
-           if(sensor[0] == '6') { 
-               DebugPrintln("the max44009 is polled");
+           if(senSor == 6) { 
+               consoleOut("the max44009 is polled");
                p = licht.get_lux();
                DebugPrint("the lichtvalue in lux = ");
                DebugPrintln(String(p));
@@ -118,15 +118,15 @@ void getWeather() {
    int huidig = int(luchtdruktabel[0]*10);
     
    if (huidig > gemiddeld) {
-    DebugPrintln("the pressure rises");
+    consoleOut("the pressure rises");
     ldString="↑↑↑";
   } 
   if (huidig < gemiddeld) {
-    DebugPrintln("the pressure lowers");
+    consoleOut("the pressure lowers");
     ldString="↓↓↓" ;
   } 
   if (huidig == gemiddeld)  {
-    DebugPrintln("the pressure unchanged");
+    consoleOut("the pressure unchanged");
     ldString="←→";
   }
  if (weerteller<10) {

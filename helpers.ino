@@ -65,15 +65,19 @@ void eraseFlash() {
           //value = 0; not needed
           switchOffNow(true, true, "button");
       }
-      if (actionFlag == 15) // the buttom
+      if (actionFlag == 15) // the button
       {
           actionFlag=0;
           meetENschakel();
       }
-      if(actionFlag == 25){
+
+      if(actionFlag == 25)  // when timers or sensors changed
+      { 
+         consoleOut("recalculating all timers and sensors");
          actionFlag=0;
-         switchOffNow(false, false, "");
-         getTijd(); // recalculate all the switches (don't need reboot)
+         switchOffNow(true, false, "settings"); // make current state off
+         getTijd(); // recalculate and (dis)arm all the timers (don't need reboot)
+         meetENschakel(); //renew sensor readings
       }
 
 }

@@ -24,7 +24,8 @@ function cTrig(box) {
   <span style='color:red;'>user</span> and the <span style='color:red;'>user passw.</span> 
   <br><br><b>active automation:</b><br>The desired behaviour of the automatic switching.
   <br>Eventually setup the connected sensor in the sensors menu. 
-  <br><br><b>Serial debug:</b><br>When checked we can see debug info on a serial monitor. <br>Sensors will not work then!!
+  <br><br><b>Serial debug:</b><br>When checked we can see debug info on a serial monitor. <br>Sensors will not work then, and polling them<br>
+  will cause a reboot!!
   <br><br></div>
 </div>
 
@@ -47,7 +48,7 @@ function cTrig(box) {
     <tr><td>user passwd<td><input  class='inp5' name='pw1' length='11' placeholder='max. 10 char' value='{pw1}' pattern='.{4,10}' title='betweeen 4 and 10 characters'></input></tr> 
     <tr><td>security<td><input class='inp2' name='bev' value='{bev}' pattern='(?:[01]|2(?![4-9])){1}[0-9]{1}:[0-5]{1}[0-9]{1}' title='hh:mm' ></input></tr> 
     
-    <tr><td>active automation<td><select name='timer' id='timer' class='sb1'>
+    <tr><td>active automation<td><select name='autoMate' id='timer' class='sb1'>
     <option value='0' tM0>none</option>
     <option value='1' tM1>on/off timers</option>
     <aption1 value='3' tM3>thermostate</option>
@@ -85,20 +86,35 @@ void zendPageBasis(AsyncWebServerRequest *request) {
 // check if 
 void check_mismatch() {
 int klik=0;
-  if ( timer[0] == '3' && (sensor[0] != '1' && sensor[0] != '2' &&  sensor[0] != '3' )) {
+  if ( autoMate == 3 && (senSor != 1 && senSor != 2 &&  senSor != 3 )) {
     int klik=1;
-  }  
-  if ( timer[0] == '4'  && ( sensor[0] != '2' &&  sensor[0] != '3' )){
-    int klik=1;
-  }
-  if ( timer[0] == '6'  &&  sensor[0] != '6' ){
-    int klik=1;
-  }
-  if ( timer[0] == '7'  &&  sensor[0] != '7' ){
+  } 
+//  if ( timer[0] == '3' && (sensor[0] != '1' && sensor[0] != '2' &&  sensor[0] != '3' )) {
+//    int klik=1;
+//  }  
+  if ( autoMate == 4  && ( senSor != 2 &&  senSor != 3 )){
     int klik=1;
   }
+//  if ( timer[0] == '4'  && ( sensor[0] != '2' &&  sensor[0] != '3' )){
+//    int klik=1;
+//  }
+  if ( autoMate == 6  &&  senSor != 6 ){
+    int klik=1;
+  }
+//  if ( timer[0] == '6'  &&  sensor[0] != '6' ){
+//    int klik=1;
+//  }
+  if ( autoMate == 7  &&  senSor != 7 ){
+    int klik=1;
+  }
+//  if ( timer[0] == '7'  &&  sensor[0] != '7' ){
+//    int klik=1;
+//  }
+//  if ( klik == 1 ) {
+//    timer [0] = '0';
+//  }
   if ( klik == 1 ) {
-    timer [0] = '0';
+    autoMate = 0; 
   }
 }
 
@@ -106,50 +122,42 @@ int klik=0;
 //          replace the selectbox for active automation only (sensors)
 // **********************************************************************************
 void replace_timerselectbox () {  // wordt door basisconfig gebruikt
+// make the available options visible
+
 //webPage.replace("tieTel", dvName );
 //webPage.replace("HANSIART" , String(dvName));  
 
 // if there is a temperaturesensor then we have to show the button for settings
 // and also the option for thermostate in the selectbox
-if (sensor[0] == '1' || sensor[0] == '2' || sensor[0] == '3') {
-//DebugPrintln("de waarde van sensor[1] is 1  2 of 3");
+if (senSor == 1 || senSor == 2 || senSor == 3) {
+   consoleOut("de waarde van senSor is 1  2 of 3");
 //  toSend.replace("'thermostaat' type='hidden'", "'thermostaat' type='button'");
   toSend.replace("aption1", "option"); // 
   } 
  // if there is a dht or BME connected, also the hygrostate
-if (sensor[0] == '2' || sensor[0] == '3') {
+if (senSor == 2 || senSor == 3) {
   toSend.replace("aption2", "option"); //  
 }
 //if (sensor[0] == '4') {
 //  toSend.replace("aption5", "option"); // de option voor de motion sensor
 
-if (sensor[0] == '6') {
+if ( senSor == 6 ) {
   toSend.replace("aption3", "option"); // the option for the light sensor
 }
-if (sensor[0] == '7') {
+if ( senSor == 7 ) {
   toSend.replace("aption4", "option"); // the option for the digital sensor
 }
+  // put back the selected option in the select
+  switch( autoMate ){
+      case 0: toSend.replace ("tM0", "selected"); break;
+      case 1: toSend.replace ("tM1", "selected"); break; 
+      case 3: toSend.replace ("tM3", "selected"); break;
+      case 4: toSend.replace ("tM4", "selected"); break;
+    // not needed for the motion sensor, that always works when selected
+      case 6: toSend.replace ("tM6", "selected"); break;
+      case 7: toSend.replace ("tM7", "selected"); break;  
+    }
 
-// zet de geselecteerde option in de select terug
-if (timer[0] == '0') {  // geen timers
-    toSend.replace ("tM0", "selected");
-}
-if (timer[0] == '1') { // aan/uit timers
-    toSend.replace ("tM1", "selected");
-}
-if (timer[0] == '3') { //thermostaat
-    toSend.replace ("tM3", "selected");
-}
-if (timer[0] == '4') { //hygrostaat
-    toSend.replace ("tM4", "selected");
-}
-// not needed for the motion sensor, that always works when selected
-if (timer[0] == '6') { //lichtsensor
-    toSend.replace ("tM6", "selected");
-}
-if (timer[0] == '7') { //generic digital sensor
-    toSend.replace ("tM7", "selected");
-}
 }
 
 //} // check

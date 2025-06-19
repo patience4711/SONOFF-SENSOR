@@ -24,7 +24,7 @@ const char INFOPAGE [] PROGMEM = R"=====(
 <meta charset='utf-8'>
 <link rel="icon" type="image/x-icon" href="/favicon.ico" />
 
-<title>ESP INFO</title>
+<title>SONOFF INFO</title>
 <style>
 table, th, td {border: 1px solid blue; width:font-size:12px;} 
 body {margin:10px 10px 0px 20px; font-family:'lato',Verdana,Sans-serif;font-size:12px;}
@@ -64,7 +64,7 @@ toSend += "force measuring and switch by the sensor <a href='/METEN'><button sty
 
 toSend += "firmware version : ";
 #ifdef SENSORS
-toSend += "Sonoff-v10_0_SENSORS<br>";
+toSend += "Sonoff-v11_SENSORS<br>";
 #endif
 #ifdef ESP01_FET
 toSend += "ESP01-v10_0_FET<br>";
@@ -84,26 +84,26 @@ toSend += "SONOFF-v10_0_SONOFF<br>";
 toSend += "time retrieved today : "; if ( timeRetrieved ) { toSend += "yes<br>"; } else { toSend += "no<br>"; }
 
 #ifdef SENSORS 
-if ( (temp_c == 1000 || temp_c == -127 ) && (sensor[0]=='1' || sensor[0]=='2' || sensor[0]=='3') ) { 
+if ( (temp_c == 1000 || temp_c == -127 ) && (senSor==1 || senSor==2 || senSor==3) ) { 
   toSend += "ATTENTION: the temperaturesensor is not working!<br>";
   } else { 
-      if (sensor[0] == '1') { 
+      if ( senSor ==1 ) { 
       toSend += "Temperature = " + String(temp_c,1) + " &#8451; <br>";
        }
-      if (sensor[0] == '2') {
+      if (senSor==2 ) {
       toSend += "temperature: " + String(temp_c, 1) + " &#8451;" + "   humidity: " + String(humidity,1)+"%<br>";
       }
-      if (sensor[0] == '3') {
+      if (senSor == 3) {
       toSend += "temperature: " + String(temp_c,1) + " &#8451;" + "  humidity: " + String(humidity,1)+"%  pressure: " + String(p,1) + " hPascal " + ldString + "<br>";
       }
   }
-if ( sensor[0] == '6' ) {
+if ( senSor == 6 ) {
    if ( p == 500000 ) { toSend += "ATTENTION: the lightsensor is not working!<br>";
    } else { toSend += "the amount of ambient light =: " + String(p,1) + " Lux<br>";}
 }
 DebugPrintln("fase 2");
 
-if (sensor[0] == '7') {
+if (senSor == 7) {
   toSend += "generic sensor state = : " + String(digitalRead(3)) + "<br>";
 }
 
@@ -141,7 +141,7 @@ if ( value == 1 || value == 2 || value == 17 || value == 18) { // handmatig inge
     if  ( minuutje<10 ) { digit = "0"; } else {digit = ""; }
     toSend += "  time switched on : " + String(hour(switchOnmoment)) + ":" + digit + String(minute(switchOnmoment)) + "<br>";
     #ifdef SENSORS
-    if ( value == 18 || timer[0] == '2' ) { // ingeschakeld door bewegingssensor, zoniet handmatig en dan moet de cdwn zijn ingeschakeld
+    if ( value == 18 || autoMate == 2 ) { // ingeschakeld door bewegingssensor, zoniet handmatig en dan moet de cdwn zijn ingeschakeld
             time_t uitschakeltijd = switchOnmoment + ((cdwnuur * 60 + cdwnminuut) * 60) ; // aantal seconden
             int minuutje = minute(uitschakeltijd);
             if  ( minuutje < 10 ) { digit = "0"; } 
@@ -193,10 +193,10 @@ toSend += "<tr><td>Free memory<td>" +  String(ESP.getFreeHeap()) + " bytes<td><t
 toSend += "<h3>variables dump</h3>";
 //toSend += "mqttIntopic : " + mqttIntopic + "  mqttOuttopic : " + mqttOuttopic + "<br>";
 
-toSend += "timer[0]=" + String(timer[0]) + "<br>";
-toSend += "sensor[0]=" + String(sensor[0]) + "   BS[0] = " + String(BS[0]) + "   donker=" + String(donker()) +  "   boodschap=" + String(boodschap())  + "   bwswitch=" + String(bwswitch()) +  "<br>";
+toSend += "autoMate=" + String(autoMate) + "   switchTemp=" + String(switchTemp,1) + "<br>";
+toSend += "senSor=" + String(senSor) + "   BS[0] = " + String(BS[0]) + "   donker=" + String(donker()) +  "   boodschap=" + String(boodschap())  + "   bwswitch=" + String(bwswitch()) +  "<br>";
 //toSend += "meetRes = " + String (meetRes) + "   ";
-toSend += "switchHL 0=temp 1=moist 2=licht 3=digital" + String(switchHL) + "   meetRes" + String(meetRes) + "<br>";
+toSend += "switchHL[0]=temp [1]=moist 2=licht 3=digital" + String(switchHL) + "   meetRes" + String(meetRes) + "<br>";
 
 
 //toSend += "dns ip 1 : " + WiFi.dnsIP().toString() + "  dns IP 2 : " + WiFi.dnsIP(1).toString()  + "<br>";

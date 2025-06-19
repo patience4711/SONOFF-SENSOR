@@ -81,12 +81,8 @@ void wifiConfigsave() {
       DebugPrintln("failed to open config file for writing");
     }
     DebugPrintln("wificonfig.json in SPIFFS geschreven");
-    #ifdef DEBUG 
-//    json.printTo(Serial);
-    serializeJson(json, Serial);
-    Serial.println(""); 
-    #endif
-//    json.printTo(configFile);
+    if(diagNose)serializeJson(json, Serial); Serial.println("\n");
+
     serializeJson(json, configFile);
     configFile.close();
 }
@@ -104,10 +100,10 @@ DebugPrintln("saving config");
     json["switchOn"] = switchOn;   
     json["switchOff"] = switchOff;  
     json["switchcdwn"] = switchcdwn;
-    json["switchTemp"] = switchTemp;
     json["switchHL"] = switchHL;
-    json["switchMoist"] = switchMoist;
-    json["switchLicht"] = switchLicht;
+    json["switchTemp"] = switchTemp; //float
+    json["switchMoist"] = switchMoist; //int
+    json["switchLicht"] = switchLicht; // float
     json["BS"] = BS;
     
     File configFile = LittleFS.open("/timerconfig.json", "w");
@@ -130,9 +126,9 @@ void basisConfigsave() {
     json["userPasswd"] = userPasswd;
     json["aso"] = aso;
     json["diagNose"] = diagNose;
-
-    json["timer"] = timer;
-    json["sensor"] = sensor;
+    json["autoMate"] = autoMate;
+    //json["timer"] = timer;
+    json["senSor"] = senSor;
     json["tempCal"] = tempCal; 
     json["meetRes"] = meetRes;   
 
@@ -141,10 +137,7 @@ void basisConfigsave() {
       DebugPrintln("failed to open config file for writing");
     }
     DebugPrintln("basisconfig.json in SPIFFS geschreven");
-    #ifdef DEBUG 
-    serializeJson(json, Serial);
-    Serial.println("");     
-    #endif
+    if(diagNose)serializeJson(json, Serial); Serial.println("\n");     
     serializeJson(json, configFile);
     configFile.close();
 }
@@ -164,10 +157,7 @@ void mqttConfigsave() {
       DebugPrintln("failed to open config file for writing");
     }
     DebugPrintln("mqttconfig.json in SPIFFS geschreven");
-    #ifdef DEBUG 
-    serializeJson(json, Serial);
-    Serial.println("");     
-    #endif
+    if(diagNose)serializeJson(json, Serial); Serial.println("\n");
     serializeJson(json, configFile);
     configFile.close();
 }
@@ -218,10 +208,15 @@ bool file_open_for_read(String bestand) {
               if(jsonStr.indexOf("switchOff") > 0){ strcpy(switchOff, doc["switchOff"]);}
         
                if(jsonStr.indexOf("switchcdwn") > 0)  { strcpy(switchcdwn, doc["switchcdwn"]);}
-               if(jsonStr.indexOf("switchTemp") > 0) { strcpy(switchTemp, doc["switchTemp"]);}
+               //if(jsonStr.indexOf("switchTemp") > 0) { strcpy(switchTemp, doc["switchTemp"]);}
                if(jsonStr.indexOf("switchHL") > 0  ){ strcpy(switchHL, doc["switchHL"]);}
-               if(jsonStr.indexOf("switchMoist") > 0)   { strcpy(switchMoist, doc["switchMoist"]);}
-               if(jsonStr.indexOf("switchLicht") > 0)   { strcpy(switchLicht, doc["switchLicht"]);}
+               //if(jsonStr.indexOf("switchMoist") > 0)   { strcpy(switchMoist, doc["switchMoist"]);}
+               //if(jsonStr.indexOf("switchLicht") > 0)   { strcpy(switchLicht, doc["switchLicht"]);}
+               if(jsonStr.indexOf("switchTemp") > 0)   {switchTemp = doc["switchTemp"].as<float>();}
+               if(jsonStr.indexOf("switchMoist") > 0)   {switchMoist = doc["switchMoist"].as<int>();}
+               if(jsonStr.indexOf("switchLicht") > 0)   {switchLicht = doc["switchLicht"].as<float>();}
+     
+              // Serial.println("decideValue SPIFFS : " + String(decideValue));
                if(jsonStr.indexOf("BS") > 0  ){ strcpy(BS, doc["BS"]);}
 
             } else
@@ -230,8 +225,10 @@ bool file_open_for_read(String bestand) {
                if(jsonStr.indexOf("dvName") > 0){strcpy(dvName, doc["dvName"]);}
                if(jsonStr.indexOf("userPasswd") > 0){ strcpy(userPasswd, doc["userPasswd"]);}
                if(jsonStr.indexOf("aso") > 0){ strcpy(aso, doc["aso"]);}
-               if(jsonStr.indexOf("timer") > 0){ strcpy(timer, doc["timer"]);}
-               if(jsonStr.indexOf("sensor") > 0){ strcpy(sensor, doc["sensor"]);} 
+               //if(jsonStr.indexOf("timer") > 0){ strcpy(timer, doc["timer"]);}
+               if(jsonStr.indexOf("autoMate") > 0){ autoMate = doc["autoMate"].as<int>();}
+               if(jsonStr.indexOf("senSor") > 0){ senSor = doc["senSor"].as<int>();} 
+               //if(jsonStr.indexOf("sensor") > 0){ strcpy(sensor, doc["sensor"]);} 
                if(jsonStr.indexOf("tempCal") > 0){ strcpy(tempCal, doc["tempCal"]);}
                if(jsonStr.indexOf("meetRes") > 0){ meetRes = doc["meetRes"].as<int>();}       
                if(jsonStr.indexOf("diagNose") > 0){diagNose = doc["diagNose"].as<bool>();}
