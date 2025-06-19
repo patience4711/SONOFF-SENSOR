@@ -14,7 +14,7 @@ The software has some interesting features:
 - 4 different ways to communicate with the device<br>
 - a log of the events like 'time, switched-on, by who'<br>
 
-i made this software some years ago, but recently i completely overhauled it. Its more mobile friendly now and the userinterface
+I created this software some years ago, but recently i completely overhauled it. Its more mobile friendly now and the userinterface
 has a lot of improvements.
 
 june 16 2025: There is a new version v11 available.
@@ -22,4 +22,4 @@ Download [sonoff_v11,ino.generic.bin](https://github.com/patience4711/SONOFF-SEN
 
 ![frontpage](https://github.com/user-attachments/assets/80ca500e-1aaa-4897-a1f6-de6520d11f89)
 
-
+This system uses an interesting technique to keep the frontpage up to date. When something hapens at the server (a switch, a sensor reading, the servers sends an event to the client. The client reacts with a data request to update values in the webpage. This way the webinterface does not have to refresh itself every 10 seconds.
