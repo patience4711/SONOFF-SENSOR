@@ -9,6 +9,11 @@ The software has some interesting features:
 - Smart timekeeping.
 - A lot of system info on the webinterface.
 - switch based on sensor readings, manual or via 4 timers 
+- Temperature/humidity/pressure/light/motion/touch sensors can be connected.
+- It can work with any digital sensor (sound/rain/tilt and more)
+
+i made this software some years ago, but recently i completely overhauled it. Its more mobile freindly now and the userinterface
+has a lot of improvements.
 
 june 16 2025: There is a new version v10 available.
 Download [sonoff_v10_generic.bin](https://github.com/patience4711/SONOFF-SENSOR/blob/main/sonoff-v10_generic.bin)
