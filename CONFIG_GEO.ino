@@ -66,10 +66,10 @@ void zendPageGEOconfig( AsyncWebServerRequest *request ) {
 //   if (dag == "on") { dts = true; } else { dts = false;}
 //   
 //     //nu gaan we de confirmpage tonen
-//      DebugPrintln("we gaan een nieuwe webpage inlezen in toSend");
+//      consoleOut("we gaan een nieuwe webpage inlezen in toSend");
 //
 //      //request->send(200, "text/html", toSend); //send the html code to the client
-//      DebugPrintln("GEOconfig opgeslagen");
+//      consoleOut("GEOconfig opgeslagen");
 //     
 //      wifiConfigsave();
 //

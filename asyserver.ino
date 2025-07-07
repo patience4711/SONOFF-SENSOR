@@ -62,12 +62,8 @@ server.addHandler(&events);
 // ***********************************************************************************
 server.on("/", HTTP_GET, [](AsyncWebServerRequest *request) {
  
-    DebugPrintln("homepage requested");
+    //consoleOut("homepage requested");
     loginBoth(request, "both");
-    //toSend = FPSTR(HTML_HEAD);
-    //toSend.replace("tieTel", dvName ); 
-    //toSend += FPSTR(HOMEPAGE);
-    //request->send(200, "text/html", toSend);
     request->send_P(200, "text/html", HOMEPAGE );
 });
 
@@ -81,9 +77,7 @@ server.on("/favicon.ico", HTTP_GET, [](AsyncWebServerRequest *request) {
     request->send(response);
 });
 server.on("/MENU", HTTP_GET, [](AsyncWebServerRequest *request) {
-//Serial.println("requestUrl = " + request->url() ); // can we use this
-  //if(checkRemote( request->client()->remoteIP().toString()) ) request->redirect( "/DENIED" );
-
+  if(checkRemote( request->client()->remoteIP().toString()) ) request->redirect( "/DENIED" );
   loginBoth(request, "admin");
   toSend = FPSTR(HTML_HEAD);
   toSend += FPSTR(MENUPAGE);
@@ -101,15 +95,11 @@ server.on("/TIMERCONFIG", HTTP_GET, [](AsyncWebServerRequest *request) {
     request->send(200, "text/html", toSend);
 });
 
-//server.on("/timerconfig", HTTP_GET, [](AsyncWebServerRequest *request) {
-//    handleTimerconfig(request);
-//    //request->send(200, "text/html", toSend);
-//});
 
 server.on("/TIMER", HTTP_GET, [](AsyncWebServerRequest *request) {
     int i = atoi(request->arg("welke").c_str()) ;
     tKeuze = i;
-    DebugPrint("tKeuze is "); DebugPrintln(i);
+    //consoleOut("tKeuze is " + String(i));
     //nu roepen we zendpageRelevant aan
     zendPageRelevantTimers(); // prepare the page
     request->send(200, "text/html", toSend); //send the html code to the client
@@ -154,19 +144,19 @@ server.on("/GEOCONFIG", HTTP_GET, [](AsyncWebServerRequest *request) {
     //request->send(200, "text/html", toSend);
 });
 
-server.on("/LOGPAGE", HTTP_GET, [](AsyncWebServerRequest *request) {
-    loginBoth(request, "both");
-    zendPageLog();
-    request->send( 200, "text/html", toSend );
-});
-server.on("/CLEAR_LOG", HTTP_GET, [](AsyncWebServerRequest *request) {
-    //loginAdmin(request);
-    loginBoth(request, "admin");
-    //Serial.println(F("clear log requested"));
-    Clear_Log();
-    zendPageLog();
-    request->send( 200, "text/html", toSend );  
-});
+// server.on("/LOGPAGE", HTTP_GET, [](AsyncWebServerRequest *request) {
+//     loginBoth(request, "both");
+//     zendPageLog();
+//     request->send( 200, "text/html", toSend );
+// });
+// server.on("/CLEAR_LOG", HTTP_GET, [](AsyncWebServerRequest *request) {
+//     //loginAdmin(request);
+//     loginBoth(request, "admin");
+//     //Serial.println(F("clear log requested"));
+//     Clear_Log();
+//     zendPageLog();
+//     request->send( 200, "text/html", toSend );  
+// });
 
 server.on("/REBOOT", HTTP_GET, [](AsyncWebServerRequest *request) {
   Serial.println("reboot requested");
@@ -180,9 +170,9 @@ server.on("/REBOOT", HTTP_GET, [](AsyncWebServerRequest *request) {
 server.on("/STARTAP", HTTP_GET, [](AsyncWebServerRequest *request) {
 //    if (!request->authenticate("admin", pswd)) return request->requestAuthentication();
         loginBoth(request, "admin");
-        consoleOut("erase the wifi data");
+        //consoleOut("erase the wifi data");
         String toSend = F("<!DOCTYPE html><html><style>body {font-size:44px;}</style><head><script type='text/javascript'>setTimeout(function(){ window.location.href='/'; }, 5000 ); </script>");
-        toSend += F("</head><body><center><h2>OK the accesspoint is started.</h2>Wait unil the led goes on.<br><br>Then go to the wifi-settings on your pc/phone/tablet and connect to ");
+        toSend += F("</head><body><center><h3>OK the accesspoint is started.</h3>Wait unil the led goes on.<br><br>Then go to the wifi-settings on your pc/phone/tablet and connect to ");
         toSend += getChipId(false) + " !";
         request->send ( 200, "text/html", toSend ); //zend confirm
         actionFlag = 11;
@@ -208,7 +198,7 @@ server.on("/MQTT_TEST", HTTP_GET, [](AsyncWebServerRequest *request) {
 server.on("/SENSOR", HTTP_GET, [](AsyncWebServerRequest *request) {
     int i = atoi(request->arg("welke").c_str()) ;
     tKeuze = i;
-    DebugPrint("tKeuze is "); DebugPrintln(i);
+    //consoleOut("tKeuze is " + String(i)); 
     strcpy( requestUrl, request->url().c_str() );
     //nu roepen we zendpageRelevant aan
     zendPageRelevantSensors(); 
@@ -221,11 +211,6 @@ server.on("/SENSORCONFIG", HTTP_GET, [](AsyncWebServerRequest *request) {
     zendPageSensors();
     request->send( 200, "text/html", toSend );
 });
-
-//server.on("/sensorconfig", HTTP_GET, [](AsyncWebServerRequest *request) {
-//    handleSensorconfig(request);
-//    //request->send( 200, "text/html", toSend );
-//});
 
 server.on("/METEN", HTTP_GET, [](AsyncWebServerRequest *request) {
     if (!diagNose) {
@@ -248,19 +233,6 @@ server.on("/SW=ON", HTTP_GET, [](AsyncWebServerRequest *request) {
     request->send_P(200, "text/html", HOMEPAGE);
 });
 
-// ********************************************************************
-//                    X H T  R E Q U E S T S
-//***********************************************************************
-//server.on("/get.currentTime", HTTP_GET, [](AsyncWebServerRequest *request) {
-//     String uur = String(hour());
-//     if(hour() < 10) { uur = "0" + String(hour()); } 
-//     String minuten = String(minute());
-//     if(minute() < 10) { minuten = "0" + String(minute()); }
-//     String json = "{";
-//     json += "\"uur\":\"" + uur + "\",\"min\":\"" + minuten + "\"}";
-//     request->send(200, "text/json", json);
-//     json = String();
-//});
 
 server.on("/get.Homepagedata", HTTP_GET, [](AsyncWebServerRequest *request) {     
 
@@ -318,59 +290,6 @@ server.on("/get.Homepagedata", HTTP_GET, [](AsyncWebServerRequest *request) {
     request->send(response);
 });
 
-//server.on("/get.Debugdata", HTTP_GET, [](AsyncWebServerRequest *request) {     
-//
-//    uint8_t remote = 0;
-//    if(checkRemote( request->client()->remoteIP().toString()) ) remote = 1; // for the menu link
-//    int state = value;
-//    if(state > 1) state = 1;    
-//    // set the array into a json object
-//    // in senSor we find a int that reflects the sensor
-//    // 1 = DS18B20 2 = dht11 3 bme280 4=motion 5=button 6=MAX44009 7=digital
-//    AsyncResponseStream *response = request->beginResponseStream("application/json");
-//    //StaticJsonDocument<160> doc; //(160);
-//    DynamicJsonDocument root(240); //(160);
-//
-// 
-//    root["temp"] = String(temp_c);
-//    root["switchHL[0]"] = String(switchHL[0]); // 0 or 1
-//    root["wwitcjrm"] = remote;
-//
-//    switch (atoi(sensor))  {
-//      case 0: root["sensor"]="none"; root["unit"]="&#8451;"; break;     
-//      case 1: 
-//          root["sensor"]="DS18B20" ;
-//          root["readings"] = String(temp_c, 1); 
-//          root["unit"]="&#8451;";
-//          break;
-//      case 2: 
-//          root["sensor"]="DHT11"; 
-//          root["readings"]= String(temp_c, 1) + " / " + String(humidity, 1); 
-//          root["unit"]="&#8451; / %";
-//          break;
-//      case 3: 
-//         root["sensor"]="BME280";
-//         root["readings"]=String(temp_c, 1) + " / " + String(humidity, 1)  + " / " + String(p, 1); 
-//         root["unit"]="&#8451; / % /hPa";        
-//         break;
-//      case 4: 
-//         root["sensor"]="motion"; 
-//         if(value == 18) root["readings"] = "1"; else root["readings"] = "0"; 
-//         root["unit"]="1 / 0";
-//         break;
-//      case 5: root["sensor"]= "button"; root["readings"] = "0"; root["unit"]="1 / 0"; break;
-//      case 6: 
-//         root["sensor"]="MAX4409"; 
-//         root["readings"] = String(p, 1);  
-//         root["unit"]="lux"; 
-//         break;
-//      case 7: root["sensor"]="digital"; root["readings"] = "0"; root["unit"]="1 / 0"; 
-//    }    
-//    //request->send(200, "text/json", json);
-//    //json = String();
-//    serializeJson(root, * response);
-//    request->send(response);
-//});
 
 // if everything failed we come here
 server.onNotFound([](AsyncWebServerRequest *request){

@@ -18,13 +18,7 @@ void handleForms(AsyncWebServerRequest *request) {
                String s = "ESP-" + String(ESP.getChipId());
                s.toCharArray(dvName, 21);
           }
-     autoMate = request->arg("autoMate").toInt();
-     //strcpy(timer, request->arg("timer").c_str());
-   // if this is not 1 than we have to disable all timers
-   if(autoMate != 1) {
-      for (int z = 0; z<TIMERCOUNT; z++) timerActive[z] = '0';
-      timerConfigsave();
-   }
+
          basisConfigsave();  // alles opslaan
          // check if there is a mismatch between the sensor and the automatition 
          // if so, timer becomes 0
@@ -63,7 +57,7 @@ void handleForms(AsyncWebServerRequest *request) {
           char tempChar[1] = "";
           String temp = "";
           //ledState = 0; // prevent slow down
-          if( request->hasParam("ta") )  timerActive[tKeuze] = '1';  else timerActive[tKeuze] = '0';          
+          if( request->hasParam("ta") )  bitSet(timerActive, tKeuze);  else bitClear(timerActive, tKeuze);          
           // first put back what is selected in sonnataan and zonnatuit
           temp = "";
           tempChar[0] = '\0';
@@ -71,11 +65,11 @@ void handleForms(AsyncWebServerRequest *request) {
           temp = request->arg("zonattaan").c_str(); // args are 0 to 6
           temp.toCharArray(tempChar, 2);
           relToSunOn[tKeuze]=tempChar[0];  // revise the variable relToSunOn 
-          consoleOut("relToSunOn = " + String(relToSunOn));
+          //consoleOut("relToSunOn = " + String(relToSunOn));
           temp = request->arg("zonattuit").c_str(); // args are 0 to 4
           temp.toCharArray(tempChar, 2);
           relToSunOff[tKeuze]=tempChar[0];         
-          consoleOut("relToSunOff = " + String(relToSunOff));                    
+          //consoleOut("relToSunOff = " + String(relToSunOff));                    
         
           //now inschakeltijd
           strcpy(tempChar, request->arg("inw").c_str()); 
@@ -101,39 +95,34 @@ void handleForms(AsyncWebServerRequest *request) {
            return;
     }     
      if( request->hasParam("sensorID") ) {
-        consoleOut("found sensorID");
+        //consoleOut("found sensorID");
         String temp = "";
           switch (tKeuze) {
           case 11:    
           // thermostaat
-             if (request->arg("tempHL") == "1") {
-              switchHL[0] = '1'; } else {switchHL[0]='0';}
+             if (request->arg("tempHL") == "1") bitSet(switchHL, 0); else bitClear(switchHL, 0);
               //strcpy(switchTemp, request->arg("switchVal").c_str());
              switchTemp = request->getParam("switchTemp")->value().toFloat();
              break;   
            case 12:    
           // hygrostaat
-             if (request->arg("hygHL") == "1") {
-                 switchHL[1] = '1'; } else {switchHL[1]='0';}
+             if (request->arg("hygHL") == "1") bitSet(switchHL, 1); else bitClear(switchHL, 1);
              //strcpy(switchMoist, request->arg("switchMoist").c_str());
              switchMoist = request->getParam("switchMoist")->value().toFloat();
              break;
            case 13:    
           // motionsensor
-             strcpy(BS, request->arg("behBS").c_str());
+             Bds = request->arg("behBS").toInt();
              strcpy(switchcdwn, request->arg("cdwn").c_str());
              break;
            case 14:   
           // lichtsensor
-             if (request->arg("lichtHL") == "1") {
-              switchHL[2] = '1'; } else {switchHL[2]='0';}   
-              //strcpy(switchLicht, request->arg("switchLicht").c_str());
+             if (request->arg("lichtHL") == "1") bitSet(switchHL, 2 ); else bitClear(switchHL, 2);   
               switchLicht = request->getParam("switchLicht")->value().toFloat();
              break;
            case 15:    
           // digital sensor
-             if (request->arg("digitalHL") == "1") {
-                switchHL[3] = '1'; } else { switchHL[3] = '0'; }
+             if (request->arg("digitalHL") == "1") bitSet(switchHL, 3 ); else bitClear(switchHL, 3);
              break;
             case 16:    
           // sensor keuze en calibratie en meetresolutie
@@ -144,10 +133,18 @@ void handleForms(AsyncWebServerRequest *request) {
              break;
           }
           // deze funties werken
+
+             autoMate = request->arg("autoMate").toInt();
+             //strcpy(timer, request->arg("timer").c_str());
+           // if this is not 1 than we have to disable all timers
+           if(autoMate != 1) {
+              for (int z = 0; z<TIMERCOUNT; z++) bitClear(timerActive, z);
+              timerConfigsave();
+           }           
            check_mismatch(); // if timer and sensor mismatch timer becomes nul
            timerConfigsave(); // alles opslaan in SPIFFS
-           basisConfigsave(); // voor sensor, tempcal en meetres 
-           consoleOut("sensor settings saved");
+           basisConfigsave(); // voor sensor, tempcal en meetres autoMate
+           //consoleOut("sensor settings saved");
            actionFlag = 25; // switch out, get time and measure sensor 
            // the confirm is done by the original request submitForm
            return;   

@@ -1,8 +1,8 @@
 
 // deze functie meet de weersensoren en schakelt zonodig
 void meetENschakel() {
-  consoleOut("meet en schakel functie ");  
-  DebugPrintln(minute());
+  //consoleOut("meet en schakel function ");  
+  //consoleOut(String(minute()));
 // als er een sensor aanwezig is dan meten we die voor domoticz 
     if (senSor == 0 ) return; // timers have been set
     if (senSor == 1 || senSor == 2 || senSor == 3 || senSor == 6 || senSor == 7) { // alleen als er een temperatuur of licht sensor is ingesteld
@@ -14,7 +14,7 @@ void meetENschakel() {
             if ( temp_c == 1000 || temp_c == -127 ) {return;} // sla de thermostaat en mqtt verzending over
          }
          if (senSor == 6 && p == 500000) {
-          DebugPrintln("lightsensor error p=500000" );
+          //consoleOut("lightsensor error p=500000" );
           return;}
          //nu hebben we alle foutmetingen afgevangen ook voor de luchtdruk, die is fout als de temperatuur fout is
          // de foute metingen worden niet gerapporteerd via mqtt en 'staten werken niet
@@ -44,24 +44,24 @@ void meetENschakel() {
 //*********************************************************************************************
 void meten() { 
   
-  consoleOut("function meten, time is ");
-  DebugPrintln(minute());
+  //consoleOut("function meten, time is ");
+  //consoleOut(String(minute()));
           if(senSor == 1) { 
-               DebugPrintln("the ds18B20 is polled");
+               //consoleOut("the ds18B20 is polled");
                sensors.requestTemperatures();
                temp_c = sensors.getTempCByIndex(0);
                temp_c = temp_c + atof(tempCal);
                //domoticz(0, true); 
                } // de ds18B20 sensor lezen
           if(senSor == 2) { 
-               DebugPrintln("the dht22 is polled");
+               //consoleOut("the dht22 is polled");
                gettemperature(); // de dh22sensor lezen
                temp_c = temp_c + atof(tempCal);
               // deze gegevens naar domoticz seinen
               // domoticz(0);
                } 
            if(senSor == 3) { 
-               consoleOut("the bme280 is polled");
+               //consoleOut("the bme280 is polled");
                getWeather();
                temp_c = temp_c + atof(tempCal);
                if ( humidity == 0 ) {temp_c = 1000; } // als er geen vochtigheid is polled
@@ -72,11 +72,11 @@ void meten() {
 //           }
            
            if(senSor == 6) { 
-               consoleOut("the max44009 is polled");
+               //consoleOut("the max44009 is polled");
                p = licht.get_lux();
-               DebugPrint("the lichtvalue in lux = ");
-               DebugPrintln(String(p));
-               DebugPrintln("");
+               //consoleOut("the lichtvalue in lux = ");
+               //consoleOut(String(p));
+               //consoleOut("");
                if (licht.begin()) {
                     //Serial.println("geen max44009 sensor aangesloten");
                     p=500000;
@@ -118,15 +118,15 @@ void getWeather() {
    int huidig = int(luchtdruktabel[0]*10);
     
    if (huidig > gemiddeld) {
-    consoleOut("the pressure rises");
+    //consoleOut("the pressure rises");
     ldString="↑↑↑";
   } 
   if (huidig < gemiddeld) {
-    consoleOut("the pressure lowers");
+    //consoleOut("the pressure lowers");
     ldString="↓↓↓" ;
   } 
   if (huidig == gemiddeld)  {
-    consoleOut("the pressure unchanged");
+    //consoleOut("the pressure unchanged");
     ldString="←→";
   }
  if (weerteller<10) {

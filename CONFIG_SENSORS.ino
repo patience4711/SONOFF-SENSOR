@@ -33,7 +33,15 @@ a:link, a:visited  {width: 64px;}
   <div class='divstijl'>
   <form id='formulier' method='get' action='submitForm' oninput='showSubmit()'>
   <input name='sensorID' value="sensorID" type='hidden'>
-  <center><irame name>
+  <center><table><tr><td style='width:140px;'>active automation<td style='width:280px;'><select name='autoMate' id='timer' class='sb1'>
+    <option value='0' tM0>none</option>
+    <option value='1' tM1>on/off timers</option>
+    <aption1 value='3' tM3>thermostate</option>
+    <aption2 value='4' tM4>hygrostate</option>
+    <aption3 value='6' tM6>light sensor</option>
+    <aption4 value='7' tM7>digital sensor</option>
+    </select></td></tr></table>
+  <irame name>
   </form></div>
 </div>
 <br>
@@ -54,7 +62,7 @@ a:link, a:visited  {width: 64px;}
 // welke sensor en calibratie
 const char SENSOR_WS[] PROGMEM = R"=====(
 <h4>SENSOR, CALIBRATION AND MEASURE-INTERVAL</h4>
-<table><tr><td style='width:140px;'>used sensor<td><select class='sb1' name='sensor'> 
+<table><tr><td style='width:140px;'>used sensor<td style='width:280px'><select class='sb1' name='sensor'> 
 <option value='0' sensor0>no sensor</option> 
 <option value='1' sensor1>DS18B20 sensor</option>
 <option value='2' sensor2>DHT22 sensor</option>
@@ -63,12 +71,11 @@ const char SENSOR_WS[] PROGMEM = R"=====(
 <option value='5' sensor5>push/touchbutton</option>
 <option value='6' sensor6>MAX44009 lightsensor</option>
 <option value='7' sensor7>generic digital sensor</option>
-</select></table>
-
-<table><tr><td style='width:140px;'>temp. calibration<td><input onchange="subMit()" class='inp2' name='tcal' value='+00' size='4'  required pattern='^([+-]{1}[0-9]{1}[.][0-9])$' title=' i.g. +02.4 or -1.2'><td>&nbsp&nbsp temperature correction.
-</td></tr>
-<tr><td style='width:140px;'>measure interval<td><input class='inp2' type='number' min='10' max='3600' name='mf' value='300' size='4' ><td>&nbsp&nbsp seconds.
-</td></tr></table>
+</select>
+<tr><td>temp. calibration<td><input onchange="subMit()" class='inp2' name='tcal' value='+00' size='4'  required pattern='^([+-]{1}[0-9]{1}[.][0-9])$' title=' i.g. +02.4 or -1.2'>
+</tr>
+<tr><td style='width:140px;'>measure interval<td><input class='inp2' type='number' min='10' max='3600' name='mf' value='300' size='4' >
+</tr></table>
 <p>Attention: Enter always a + of - for de temperaturecalibration, i.g. +09.3
 <br></p>
  )=====";
@@ -80,7 +87,7 @@ Switch on when the temperature is:<br><br>
 <select name='tempHL' class='sb1'>
 <option value='1' tempHL1>under</option>
 <option value='0' tempHL0>over</option></select>
-&nbsp:&nbsp&nbsp <input class='inp2' name='switchTemp' value='+00' size='5'  required pattern='^([+-]{1}[0-9]{1,2}[.][0-9])$' title=' bijv. +09.4'>&nbsp&deg;C
+&nbsp:&nbsp&nbsp <input class='inp2 hoogte'  name='switchTemp' value='+00' size='5'  required pattern='^([+-]{1}[0-9]{1,2}[.][0-9])$' title=' bijv. +09.4'>&nbsp&deg;C
 <p>Attention: Enter always a + of - in for the temperature, i.g. +09.3
 <br><br>Enter domoticz sensor idx if necessary under the mosquitto menu.</p>
  )====="; 
@@ -99,7 +106,7 @@ Switch on when the humidity is:<br><br>
  const char SENSOR_MS[] PROGMEM = R"=====(
 <h4>MOTION SENSOR:</h4>
 Set the behaviour of the sensor.<br>When are mqtt messages sent<br>and when is switched on.<br><br>
-<table><tr><td style=width:110px>behaviour:<td><select name='behBS' class='sb1'>
+<table><tr><td style=width:110px>behaviour:<td style='width:280px'><select name='behBS' class='sb1'>
 <option value='0' bew0>night: lamp and message</option>
 <option value='1' bew1>night: only message</option>
 <option value='2' bew2>night: lamp, always message</option>
@@ -136,7 +143,7 @@ Turn on when the sensor state is:<br><br>
  )====="; 
 
 void zendPageSensors() {
-DebugPrintln("sendPageSensors");
+consoleOut("sendPageSensors");
 String webPage = FPSTR(HTML_HEAD);
 webPage += FPSTR(SENSORCONFIG_START);
 
@@ -160,8 +167,8 @@ toSend += FPSTR(SENSORCONFIG_START);
     //toSend.replace("tieTel", dvName);
     //toSend.replace("HANSIART" , String(dvName)); 
 
-    DebugPrintln("zendPageRelevantSensors");
-    DebugPrint("tKeuze = "); DebugPrintln(String(tKeuze));
+    consoleOut("zendPageRelevantSensors");
+    consoleOut("tKeuze = " + String(tKeuze));
     // we gaan nu de gegevens in de getoonde pagina goed ztten, afhankelijk van tKeuze  
     place_sensorpage();
   
@@ -171,71 +178,7 @@ toSend += FPSTR(SENSORCONFIG_START);
 
 
 
-// deze functie wordt opgeroepen na timer instellingen
-//*******************************************************************************************
-//              voorbereiden voor opslaan van de gegevens
-// *****************************************************************************************
 
-//void handleSensorconfig(AsyncWebServerRequest *request) { // form action = handletimerConfig
-//// we krijgen alleen severargumenten van de betreffende timer bijv zonattaan0 dus
-////lees de serverargumenten en plaats deze in de betreffende variabelen
-//
-//String temp = "";
-//switch (tKeuze) {
-//case 11:    
-//// thermostaat
-//   if (request->arg("tempHL") == "1") {
-//    switchHL[0] = '1'; } else {switchHL[0]='0';}
-//    strcpy(switchTemp, request->arg("switchTemp").c_str());
-//   break;   
-// case 12:    
-//// hygrostaat
-//   if (request->arg("hygHL") == "1") {
-//       switchHL[1] = '1'; } else {switchHL[1]='0';}
-//   strcpy(switchMoist, request->arg("switchMoist").c_str());
-//   break;
-// case 13:    
-//// motionsensor
-//   strcpy(BS, request->arg("behBS").c_str());
-//   strcpy(switchcdwn, request->arg("cdwn").c_str());
-//   break;
-// case 14:   
-//// lichtsensor
-//   if (request->arg("lichtHL") == "1") {
-//    switchHL[2] = '1'; } else {switchHL[2]='0';}   
-//    strcpy(switchLicht, request->arg("switchLicht").c_str());
-//   break;
-// case 15:    
-//// digital sensor
-//   if (request->arg("digitalHL") == "1") {
-//      switchHL[3] = '1'; } else { switchHL[3] = '0'; }
-//   break;
-//  case 16:    
-//// sensor keuze en calibratie en meetresolutie
-//   strcpy(sensor, request->arg("sensor").c_str());
-//   strcpy(tempCal, request->arg("tcal").c_str());
-//   meetRes = request->arg("mf").toInt();
-//   break;
-//}
-//// deze funties werken
-// 
-// //DebugPrintln("we gaan een nieuwe webpage inlezen in toSend");
-// //toSend = FPSTR(CONFIRM);
-// // toSend = html3; // de confirm pagina
-// // de ip adreswaarden vervangen en wat zaken toevoegen
-//  //toSend.replace("HAIPS" , String(swName));
-//  
-// //request->send_P(200, "text/html", CONFIRM); //send the html code to the client
-//
-//
-// 
-// check_mismatch(); // als timer en sensor niet in overeenstemming dan wordt timer nul
-// timerConfigsave(); // alles opslaan in SPIFFS
-// basisConfigsave(); // voor sensor, tempcal en meetres 
-// DebugPrintln("sensor settings saved");
-//
-//actionFlag = 10; // reboot
-//  }
 
 
 void place_sensorpage() {
@@ -250,12 +193,15 @@ void place_sensorpage() {
         }
         //toSend.replace("value='+00'", "value='" + String(switchTemp) + "'");
         toSend.replace("value='+00'", "value='" + String(switchTemp,1) + "'");
-        if (switchHL[0] == '0') {
+        if (bitRead(switchHL, 0) == false) {
               toSend.replace("tempHL0" , "selected"); //hoger
         } else {
           toSend.replace("tempHL1" , "selected");
         }
     }
+//replace the select for active automation
+ replace_automationSelect();  //will it work? 
+    
     if (tKeuze == 12) {
     // hygrostaat 
         toSend.replace("<irame name>" , FPSTR(SENSOR_HS));
@@ -265,7 +211,7 @@ void place_sensorpage() {
         }
         //toSend.replace("value='000A'", "value='" + String(switchMoist) + "'");
         toSend.replace("value='000A'", "value='" + String(switchMoist, 1) + "'");
-        if (switchHL[1] == '0') {
+        if (bitRead(switchHL, 1) == false) {
               toSend.replace("hygHL0" , "selected"); //hoger
         } else {
           toSend.replace("hygHL1" , "selected"); // lager
@@ -275,20 +221,20 @@ void place_sensorpage() {
     //motion sensor
           toSend.replace("<irame name>" , FPSTR(SENSOR_MS));  
           // de bewegingssensor gegevens terugzetten
-          switch (BS[0]) {
-          case '0': 
+          switch (Bds) {
+          case 0: 
               toSend.replace ("bew0", "selected");
               break;
-          case '1': // 
+          case 1: // 
               toSend.replace ("bew1", "selected");
               break;
-          case '2':  
+          case 2:  
               toSend.replace ("bew2", "selected");
               break;
-          case '3':
+          case 3:
               toSend.replace ("bew3", "selected");
               break;
-          case '4':
+          case 4:
               toSend.replace ("bew4", "selected");
               break;    
           } 
@@ -304,7 +250,7 @@ void place_sensorpage() {
        }
        //toSend.replace("{00000}", String(switchLicht));
        toSend.replace("{00000}", String(switchLicht, 0 ));
-       if (switchHL[2] == '0') {
+       if (bitRead(switchHL, 2) == false) {
           toSend.replace("lichtHL0" , "selected"); // hoger
        } else {
           toSend.replace("lichtHL1" , "selected"); // lager
@@ -315,7 +261,7 @@ void place_sensorpage() {
         //sensor keuze
         toSend.replace("<irame name>" , FPSTR(SENSOR_DS));  
         // de digital sensor gegevens terugzetten
-        if (switchHL[3] == '0') {
+        if (bitRead(switchHL, 3) == false) {
             toSend.replace("digitalHL0" , "selected"); //hoger
         } else {
             toSend.replace("digitalHL1" , "selected"); // lager
@@ -340,4 +286,43 @@ void place_sensorpage() {
         toSend.replace("name='tcal' value='+00'", "name='tcal' value='" + String(tempCal) + "'");
         toSend.replace("name='mf' value='300'", "name='mf' value='" + String(meetRes) + "'");
     }
+}
+
+// *********************************************************************************
+//          replace the selectbox for active automation only (sensors)
+// **********************************************************************************
+void replace_automationSelect() {  // wordt door basisconfig gebruikt
+// make the available options visible
+
+// if there is a temperaturesensor then we have to show the button for settings
+// and also the option for thermostate in the selectbox
+if (senSor == 1 || senSor == 2 || senSor == 3) {
+   consoleOut("de waarde van senSor is 1  2 of 3");
+//  toSend.replace("'thermostaat' type='hidden'", "'thermostaat' type='button'");
+  toSend.replace("aption1", "option"); // 
+  } 
+ // if there is a dht or BME connected, also the hygrostate
+if (senSor == 2 || senSor == 3) {
+  toSend.replace("aption2", "option"); //  
+}
+//if (sensor[0] == '4') {
+//  toSend.replace("aption5", "option"); // de option voor de motion sensor
+
+if ( senSor == 6 ) {
+  toSend.replace("aption3", "option"); // the option for the light sensor
+}
+if ( senSor == 7 ) {
+  toSend.replace("aption4", "option"); // the option for the digital sensor
+}
+  // put back the selected option in the select
+  switch( autoMate ){
+      case 0: toSend.replace ("tM0", "selected"); break;
+      case 1: toSend.replace ("tM1", "selected"); break; 
+      case 3: toSend.replace ("tM3", "selected"); break;
+      case 4: toSend.replace ("tM4", "selected"); break;
+    // not needed for the motion sensor, that always works when selected
+      case 6: toSend.replace ("tM6", "selected"); break;
+      case 7: toSend.replace ("tM7", "selected"); break;  
+    }
+
 }  

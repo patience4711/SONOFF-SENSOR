@@ -35,12 +35,12 @@ sunMoon  sm;
            }
  }
 
-void printDate(time_t date) {
-  char buff[20];
-  sprintf(buff, "%2d-%02d-%4d %02d:%02d:%02d",
-  day(date), month(date), year(date), hour(date), minute(date), second(date));
-  Serial.print(buff);
-}  // einde switchcalc
+// void printDate(time_t date) {
+//   char buff[20];
+//   sprintf(buff, "%2d-%02d-%4d %02d:%02d:%02d",
+//   day(date), month(date), year(date), hour(date), minute(date), second(date));
+//   Serial.print(buff);
+// }  // einde switchcalc
 
 // ********** calculate the switch moment for today *********************************
 void switchCalc() {
@@ -55,7 +55,7 @@ sun_setrise(); // calculate first sunset and rise
 //consoleOut("current time in unixtime expressed: ");
 //DebugPrint(now());
 //DebugPrintln("");
- // we caalculate unixtime at 00:00 today
+ // we calculate unixtime at 00:00 today
 tmElements_t myElements = {0, 0, 0, 0, day(), month(), (year()-1970)};
 dagbegintijd = makeTime(myElements);
 //DebugPrint("daystart in unixtime: ");
@@ -95,13 +95,13 @@ void timercalc(int nummer) { // begint bij 0
 // no need to check that
 
 // als weekday() + 0*7 -1 (dat is sun=1 dus di =3 -1 = 2
-consoleOut ("must we switch today timer " + String(nummer));
+consoleOut ("calculate timer " + String(nummer));
 //DebugPrintln(nummer);
 //DebugPrint("weekday + nummer*7 -1 = "); DebugPrintln(String(weekday() -1 + nummer*7));
 
-if (weekDag[weekday()+nummer*7-1] == 'y' && timerActive[nummer] == '1') {
+if (weekDag[weekday()+nummer*7-1] == 'y' && bitRead(timerActive, nummer) == true) {
 mustSwitch[nummer] = true;
-consoleOut("mustSwitch = true");
+//consoleOut("mustSwitch = true");
 } else {
 mustSwitch[nummer] = false; 
 //DebugPrintln("mustSwitch = false");
@@ -138,9 +138,6 @@ if(uitschakeltijd[nummer] == inschakeltijd[nummer]){ // als ze gelijk zijn dan k
 }
 if(uitschakeltijd[nummer] < inschakeltijd[nummer]){
 uitschakeltijd[nummer] += 86400; // we tellen er 24 uur bij 
-//DebugPrint("De uitschakel tijd plus 24 uur in unixtijd uitgedrukt is");
-//DebugPrintln(uitschakeltijd[nummer]); // sunset is in minuten
-//DebugPrintln("");
 }
 
 //DebugPrintln ("*************************************************************************");
@@ -161,16 +158,6 @@ time_t schakel_tijd(char relToSun[5], int z, int sw) {
   
   zonat[0] = relToSun[z];
 
-  //DebugPrintln("we are in the function schakel_tijd");
-  //DebugPrint("relToSun[z] = ");
-  //DebugPrintln(String(relToSun[z]));
-  
-  //DebugPrint("zonat = ");
-  //DebugPrintln(String(zonat[0]));
-  //DebugPrint("sw = ");
-  //DebugPrintln(sw);
-
-//zonat[0] = relToSun[z];
 switch (zonat[0]) { // dit is onbegrijpelijk maar lijkt te werken leest alleen de 1e positie?
   case '0': //absoluut
     //DebugPrint("case was 0 ");
@@ -273,10 +260,6 @@ bool zomertijd() {
 
     int eersteoct = dow(year(), 10 ,1);
     int zdoct ;
-    //Serial.print(eersteoct);
-    //Serial.println("");
-    // dow gaat van 0 naar 6, zondag is 0
-    //Serial.print("de eerste zondag van zondag van oct is dag ");
     if (zdoct == 0) {
     zdoct = 1;
     } else {

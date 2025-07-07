@@ -10,7 +10,7 @@ const char HOMEPAGE[] PROGMEM = R"=====(
 #td1 {width:150px;}
 #td2 {width:90px;}
 table, th, td {
-  border: 2px solid blue; font-size:16px; padding:6px; text-align:center; border-collapse:collapse;backgound-color:#dfff80;
+  border: 2px solid blue; font-size:14px; padding:6px; text-align:center; border-collapse:collapse;backgound-color:#dfff80;
   }
 tr {background-color:#ccffcc;}
 .bth {margin-bottom: 50px;}

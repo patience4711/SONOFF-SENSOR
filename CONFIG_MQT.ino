@@ -75,22 +75,22 @@ webPage.replace("{seidx}"          , String(idxSensor) );
 //
 //  //collect serverarguments
 //  mqttBroker = request->arg("mqtAdres");
-//  //DebugPrint("mqttBroker na strcpy = "); DebugPrintln(mqttBroker); // oke
+//  //DebugPrint("mqttBroker na strcpy = "); consoleOut(mqttBroker); // oke
 //
 //  mqttPort = request->arg("mqtPort");
-//  //DebugPrint("mqttPort = "); DebugPrintln(mqttPort); // ok
+//  //DebugPrint("mqttPort = "); consoleOut(mqttPort); // ok
 //
 //  mqttIntopic = request->arg("mqtinTopic");
-//  //DebugPrint("mqttIntopic na strcpy = "); DebugPrintln(String(mqttIntopic)); // oke
+//  //DebugPrint("mqttIntopic na strcpy = "); consoleOut(String(mqttIntopic)); // oke
 //
 //  mqttOuttopic = request->arg("mqtoutTopic");
-//  //DebugPrint("mqttOuttopic na strcpy = "); DebugPrintln(String(mqttOuttopic)); // oke
+//  //DebugPrint("mqttOuttopic na strcpy = "); consoleOut(String(mqttOuttopic)); // oke
 //  
 ////  Mqtt_Username = request->arg("mqtUser");
-////  DebugPrint("Mqtt_Username na strcpy = "); DebugPrintln(Mqtt_Username); // oke
+////  DebugPrint("Mqtt_Username na strcpy = "); consoleOut(Mqtt_Username); // oke
 ////
 ////  Mqtt_Password = request->arg("mqtPas");
-////  DebugPrint("Mqtt_Username na strcpy = "); DebugPrintln(Mqtt_Password); // oke
+////  DebugPrint("Mqtt_Username na strcpy = "); consoleOut(Mqtt_Password); // oke
 //
 //  idxSwitch = request->arg("mqidx1").toInt();
 //  idxSensor = request->arg("mqidx2").toInt();   
@@ -99,7 +99,7 @@ webPage.replace("{seidx}"          , String(idxSensor) );
 //   String dag = request->arg("mqtEn");  // mqselect
 //   if ( dag == "on") { mqttEnabled = true; } else { mqttEnabled = false; }
 //
-//  DebugPrintln("saved mqttconfig");
+//  consoleOut("saved mqttconfig");
 //  mqttConfigsave();  // 
 //  actionFlag = 10; // takes care for reboot
 //}

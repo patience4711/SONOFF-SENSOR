@@ -39,7 +39,8 @@ void plaats_timerpage() {
 // we must plate the timerpage with the actual values 
     toSend.replace("<irame name>" , FPSTR(TIMER_GENERAL));  
     toSend.replace("{nr}" , String(tKeuze)); // vervang timer nummer
-    if(timerActive[tKeuze] == '1') toSend.replace("tActive", "checked");
+    //if(timerActive[tKeuze] == true) toSend.replace("tActive", "checked");
+    if(bitRead(timerActive,tKeuze) == true) toSend.replace("tActive", "checked");
     // replace the value fo program to start
     //toSend.replace("'{prg}'" , "'" + String(defaultProg[tKeuze]) + "'") ;
     // we put back "selected" for the option in the selectbox zonattaanwelke_1 2 3 4 or 5 
@@ -49,7 +50,7 @@ void plaats_timerpage() {
     toSend.replace(zonatt_replace(String(relToSunOff[tKeuze]), "zonattuit"), "selected"); 
     
      // put back the checked selectboxes 
-    char *grap[] = {"selzo", "selma", "seldi", "selwo", "seldo", "selvr", "selza"};
+    const char *grap[] = {"selzo", "selma", "seldi", "selwo", "seldo", "selvr", "selza"};
     String vervang = "";
     //weekDag
      consoleOut("replace checkboxes to show the checked ones");
@@ -103,28 +104,28 @@ void schakelen() {
     // *******************************************************************************************
     //                             switch by timer 0  
     // *******************************************************************************************
-    if (timerActive[0]=='1' && mustSwitch[0] && !hasSwitched[1] && !hasSwitched[2] && !hasSwitched[3] ) {  //als niet door timer1 of 2 is ingeschakeld
+    if (bitRead(timerActive, 0) ==true && mustSwitch[0] && !hasSwitched[1] && !hasSwitched[2] && !hasSwitched[3] ) {  //als niet door timer1 of 2 is ingeschakeld
     test_schakel_in(0);
     test_schakel_uit(0);
     }
     // *******************************************************************************************
     //                             switch by timer 1  
     // *******************************************************************************************
-    if (timerActive[1]=='1' && mustSwitch[1] && !hasSwitched[0] && !hasSwitched[2] && !hasSwitched[3] ) {  //als niet door timer0 of 2is ingeschakeld  
+    if (bitRead(timerActive, 1)==true && mustSwitch[1] && !hasSwitched[0] && !hasSwitched[2] && !hasSwitched[3] ) {  //als niet door timer0 of 2is ingeschakeld  
     test_schakel_in(1);
     test_schakel_uit(1);
     }
     //// *******************************************************************************************
     ////                           switch by timer 2 
     //// *******************************************************************************************
-    if (timerActive[2]=='1' && mustSwitch[2] && !hasSwitched[0] && !hasSwitched[1] && !hasSwitched[3] ) { // als niet door timer 0 of 1 of 3 
+    if (bitRead(timerActive, 2)==true && mustSwitch[2] && !hasSwitched[0] && !hasSwitched[1] && !hasSwitched[3] ) { // als niet door timer 0 of 1 of 3 
     test_schakel_in(2);
     test_schakel_uit(2);
     }
     //// *******************************************************************************************
     ////                           switch by timer 3 
     //// *******************************************************************************************
-    if (timerActive[3]=='1' && mustSwitch[3] &&  !hasSwitched[0] && !hasSwitched[1] && !hasSwitched[2])  {  
+    if (bitRead(timerActive, 3)==true && mustSwitch[3] &&  !hasSwitched[0] && !hasSwitched[1] && !hasSwitched[2])  {  
     test_schakel_in(3);
     test_schakel_uit(3);
     }
@@ -147,7 +148,7 @@ void test_schakel_uit(int welke) {
               switchOffNow(true, false, who); //meteen de lamp uit en mqtt message en checkTimers
               mustSwitch[welke] = false;
               hasSwitched[welke] = false; // prevent repetitions
-              Serial.println("switched off by timer"+ String(welke));
+             // Serial.println("switched off by timer"+ String(welke));
              }
 }
 
@@ -168,7 +169,7 @@ void switchOnNow(bool zend, bool check, String logID) {
       }
       if( zend ) { mqttSwitchupdate(); }// mqtt message about switch state 
       if( check ) {checkTimers();} // disarm timer if needed
-      if(logID != "") Update_Log(logID, "on"); 
+      //if(logID != "") Update_Log(logID, "on"); 
       eventSend();
     }
 
@@ -179,7 +180,7 @@ void switchOnNow(bool zend, bool check, String logID) {
         value = 0;
         if( zend ) { mqttSwitchupdate(); }// mqtt message about switch state
         if( check ) {checkTimers();} // disarm timer if needed
-        if(logID != "") Update_Log(logID, "off");
+        //if(logID != "") Update_Log(logID, "off");
         eventSend();
     }
 //}   

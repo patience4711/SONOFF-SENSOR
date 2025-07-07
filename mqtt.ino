@@ -7,14 +7,14 @@
 bool mqttConnect() {   // MQTT connection (documented way from AutoConnect : https://github.com/Hieromon/AutoConnect/tree/master/examples/mqttRSSI_NA)
     if ( mqttBroker[0] == '\0' || mqttBroker[0] == '0' ) {
       mqttEnabled = false; // we proberen het niet opnieuw
-      DebugPrint("no broker, cancelling");
+      //consoleOut("no broker, cancelling");
       return false;
     }
-    DebugPrint("going to connect to mqtt broker "); DebugPrint(String(mqttBroker));
-    DebugPrintln(" connecting");
+    //consoleOut("going to connect to mqtt broker " + String(mqttBroker));
+    //consoleOut(" connecting");
     if (mqttPort == 0 ) mqttPort = 1883;   // just in case ....
     uint8_t retry = 3;
-    DebugPrintln(String("\nAttempting connect to MQTT broker: ") + String(mqttBroker));
+    //consoleOut(String("\nAttempting connect to MQTT broker: ") + String(mqttBroker));
     //We generate a unique name for this device to avoid mqtt problems in case if you have multiple RFlink-ESP devices
     String clientId = getChipId(true);
     while (!MQTT_Client.connected()) 
@@ -26,16 +26,17 @@ bool mqttConnect() {   // MQTT connection (documented way from AutoConnect : htt
           // ... and subscribe, send = MQTTtoRF
           String sub = getChipId(false) + "/in"; //
           MQTT_Client.subscribe ( sub.c_str() ) ;   // 
-          consoleOut("MQTT subscribed on topic " + sub);
-          Update_Log("mqtt", "connected"); 
+          //consoleOut("MQTT subscribed on topic " + sub);
+         // Update_Log("mqtt", "connected"); 
           return true;
      }
      else 
      {
-          DebugPrintln("Connection mqttserver:" + String(mqttBroker));
-          DebugPrintln("Connection failed:" + String(MQTT_Client.state()));
+          //consoleOut("Connection mqttserver:" + String(mqttBroker));
+          //consoleOut("Connection failed:" + String(MQTT_Client.state()));
           String term = "connection failed state: " + String(MQTT_Client.state());
-          Update_Log("mqtt", term);
+          consoleOut(term);
+          //Update_Log("mqtt", term);
           if (!--retry)
             break;
           delay(200);
@@ -57,15 +58,15 @@ int swidx = doc["idx"].as<int>();
 int cmd = doc["nvalue"].as<int>();
 
 if (swidx == idxSwitch ) {
-  DebugPrintln("found my switchIDX");
+  //consoleOut("found my switchIDX");
      if ( cmd == 1 && digitalRead(RELAY_PIN)==SWITCH_UIT) {
-         DebugPrintln("mqtt in: On gevonden");
+         //consoleOut("mqtt in: On gevonden");
          checkTimers();
          switchOnNow(false, false, "mqtt in"); // geen mqtt message
         }
 
      if ( cmd == 0 && digitalRead(RELAY_PIN)==SWITCH_AAN) {
-         DebugPrintln("mqtt in: Off gevonden");
+         //consoleOut("mqtt in: Off gevonden");
          checkTimers(); // maak een eventuele timer onschadelijk
          switchOffNow(false, true, "mqtt in"); //geen mqtt wel checkTimers
        } 
@@ -79,10 +80,10 @@ if (swidx == idxSwitch ) {
 void mqttSwitchupdate() 
 {
   if ( !mqttEnabled ){ 
-    DebugPrintln("no valid mqtt address or not configured, skipping..");
+    //consoleOut("no valid mqtt address or not configured, skipping..");
     return;
   }    
-  if ( ! mqttConnect) return;
+  if ( ! mqttConnect() ) return;
   // update switch state in a json format
   StaticJsonDocument<256> doc;
   //doc["command"] = "switchlight";
@@ -101,11 +102,11 @@ void mqttSwitchupdate()
   void sendMqttsensor() {
   String mqttMess;
   if ( !mqttEnabled ){ 
-    consoleOut("no valid mqtt address or not configured, skipping..");
+    //consoleOut("no valid mqtt address or not configured, skipping..");
     return;
   }
   if ( ! mqttConnect) {
-  consoleOut("mqtt not connected, skipping..");
+  //consoleOut("mqtt not connected, skipping..");
   return;
   }
   // this function takes care for the transmission of the mqtt messages
@@ -159,8 +160,8 @@ void mqttSwitchupdate()
        if(senSor==4 || senSor==7) Mess =  String(digitalRead(3)); //motion or digital
 
       doc["svalue"] = Mess;
-      DebugPrint("svalue in sendMqtt = "); 
-      DebugPrintln(Mess);
+      //consoleOut("svalue in sendMqtt = "); 
+      //consoleOut(Mess);
     
     // we hebben nu de mqtt json en kunnen deze verzenden
       char out[64];

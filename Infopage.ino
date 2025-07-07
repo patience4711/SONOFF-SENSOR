@@ -38,7 +38,7 @@ body {margin:10px 10px 0px 20px; font-family:'lato',Verdana,Sans-serif;font-size
 )=====";
 
 void handleInfo(AsyncWebServerRequest *request) {
-DebugPrintln("we zijn op handleInfopage() ");
+consoleOut("we are at handleInfopage() ");
 
 toSend = FPSTR(INFOPAGE);
  char temp[100]={0};
@@ -48,15 +48,15 @@ toSend+="<center><h2>STATUS INFORMATION</h2></center>";
 toSend+="<center><div style='position:fixed; margin: auto; left: 0; right: 0'>";
 toSend +="<a href='/'> <button style='width:150px; height:50px;text-align:center; font-weight:bold; font-size:20px; background:#db97b9;'>close</button></a></div>";
 
-  String zt = "summertime";
+  String zt = " -summert";
   switch (dst) {
-    case 2: zt="wintertime"; break;
-    case 0: zt="no dst set"; break;
+    case 2: zt=" -wintert"; break;
+    case 0: zt=" -no dst set"; break;
   }
   sprintf( temp, "<tr><td>systemtime<td> %d:%d" , hour(), minute() );
   toSend += "<br><br><br><br><span style='font-size:20px;font-weight:bold'>&nbsp;" + String(temp) + zt + "</span></tr><br>";
 
-  DebugPrintln("fase 0");
+  consoleOut("fase 0");
 
 #ifdef SENSORS
 toSend += "force measuring and switch by the sensor <a href='/METEN'><button style='width:80px; height:30px;text-align:center; font-weight:bold; font-size:14px; background:#42f5ec;'>measure</button><br></a>"; 
@@ -64,22 +64,22 @@ toSend += "force measuring and switch by the sensor <a href='/METEN'><button sty
 
 toSend += "firmware version : ";
 #ifdef SENSORS
-toSend += "Sonoff-v11_SENSORS<br>";
-#endif
-#ifdef ESP01_FET
-toSend += "ESP01-v10_0_FET<br>";
-#endif
-#ifdef ESP01_TRIAC
-toSend += "ESP01-v10_0_TRIAC<br>";
-#endif
-#ifdef S20
-toSend += "SONOFF-v10_0_S20<br>";
-#endif
-#ifdef MINI
-toSend += "SONOFF-v10_0_MINI<br>";
-#endif
-#ifdef SONOFF
-toSend += "SONOFF-v10_0_SONOFF<br>";
+toSend += "Sonoff-v13_SENSORS<br>";
+//#endif
+//#ifdef ESP01_FET
+//toSend += "ESP01-v10_0_FET<br>";
+//#endif
+//#ifdef ESP01_TRIAC
+//toSend += "ESP01-v10_0_TRIAC<br>";
+//#endif
+//#ifdef S20
+//toSend += "SONOFF-v10_0_S20<br>";
+//#endif
+//#ifdef MINI
+//toSend += "SONOFF-v10_0_MINI<br>";
+//#endif
+//#ifdef SONOFF
+//toSend += "SONOFF-v10_0_SONOFF<br>";
 #endif
 toSend += "time retrieved today : "; if ( timeRetrieved ) { toSend += "yes<br>"; } else { toSend += "no<br>"; }
 
@@ -101,7 +101,7 @@ if ( senSor == 6 ) {
    if ( p == 500000 ) { toSend += "ATTENTION: the lightsensor is not working!<br>";
    } else { toSend += "the amount of ambient light =: " + String(p,1) + " Lux<br>";}
 }
-DebugPrintln("fase 2");
+consoleOut("fase 2");
 
 if (senSor == 7) {
   toSend += "generic sensor state = : " + String(digitalRead(3)) + "<br>";
@@ -184,9 +184,9 @@ toSend += "<tr><td>gmtOffset:&nbsp<td>" + String(gmtOffset) + " min.<td>mooncycl
 
 toSend += "<br><table><tr><TH> ESP INFORMATION</th></tr>";
 toSend += "<tr><td>ESP CHIP ID nr: <td>" + String(ESP.getChipId());
-toSend += "<td>ESP Mac adres: <td>"  + String(WiFi.macAddress()) + "</tr>";
+toSend += "<td>Mac address: <td>"  + String(WiFi.macAddress()) + "</tr>";
 toSend += "<tr><td>IDE Flash size: <td>" + String(ESP.getFlashChipSize()) + " bytes";
-toSend += "<td>Echte Flash size<td>" +  String(ESP.getFlashChipRealSize()) + " bytes</tr>";
+toSend += "<td>real Flash size<td>" +  String(ESP.getFlashChipRealSize()) + " bytes</tr>";
 toSend += "<tr><td>Free memory<td>" +  String(ESP.getFreeHeap()) + " bytes<td><td>" + "</table>";
 
 
@@ -194,13 +194,22 @@ toSend += "<h3>variables dump</h3>";
 //toSend += "mqttIntopic : " + mqttIntopic + "  mqttOuttopic : " + mqttOuttopic + "<br>";
 
 toSend += "autoMate=" + String(autoMate) + "   switchTemp=" + String(switchTemp,1) + "<br>";
-toSend += "senSor=" + String(senSor) + "   BS[0] = " + String(BS[0]) + "   donker=" + String(donker()) +  "   boodschap=" + String(boodschap())  + "   bwswitch=" + String(bwswitch()) +  "<br>";
+toSend += "senSor=" + String(senSor) + "   Bds = " + String(Bds) + "   donker=" + String(donker()) +  "   boodschap=" + String(boodschap())  + "   bwswitch=" + String(bwswitch()) +  "<br>";
 //toSend += "meetRes = " + String (meetRes) + "   ";
-toSend += "switchHL[0]=temp [1]=moist 2=licht 3=digital" + String(switchHL) + "   meetRes" + String(meetRes) + "<br>";
-
+String result = "";
+//we use only 4 bits, bit 0 is right so we read reversed (timer 3 is 00001000 bitSet(3)
+//for (int i = 7; i >= 0; i--) { result += bitRead(switchHL, i);} // gives 00001000 bitSet(3)
+//for (int i = 3; i >= 0; i--) { result += bitRead(switchHL, i);} // would give 1000 bitSet(3)
+for (int i = 0; i < 4; i++) { result += bitRead(switchHL, i);} // would give 0001 bitSet(3)
+toSend += "switchHL = " + result;
+result="";
+// show only bit 7 to 4  (bit 0 = right)
+for (int i = 0; i < 4; i++) { result += bitRead(switchHL, i);} // would give 0001 bitSet(3)
+//for (int i = 7; i > 3; i--) { result += bitRead(timerActive, i);}
+toSend += "    timerActive = " + result;
 
 //toSend += "dns ip 1 : " + WiFi.dnsIP().toString() + "  dns IP 2 : " + WiFi.dnsIP(1).toString()  + "<br>";
-toSend += "dts=" + String(dts) + "   tKeuze = " + String(tKeuze) + "<br>";
+toSend += "   dts=" + String(dts) + "   tKeuze = " + String(tKeuze) + "<br>";
 toSend += "relToSunOn = " + String(relToSunOn) + "  relToSunOff = " + String(relToSunOff) + "<br>"; 
 toSend += "switchOn = " + String(switchOn) + "<br>";
 toSend += "switchOff = " + String(switchOff) + "<br>";
@@ -220,7 +229,7 @@ while (dir.next()) {
 toSend += "<h4>calculated timer properties</h4>";
 toSend += "unix day starttime = " + String(dagbegintijd) + "<br>"; 
 for(int aantal=0; aantal<TIMERCOUNT; aantal ++ ) {
-if(timerActive[aantal] == '1') {
+if(bitRead(timerActive, aantal) == true) {
       toSend += "timer : " + String(aantal) + "]";
       toSend += "<br>switchOnTime[] = ";
       int Uur=hour(inschakeltijd[aantal]); 

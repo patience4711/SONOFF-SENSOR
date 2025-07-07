@@ -43,4 +43,7 @@
 // flashed it as 8285 1M fs none erased flash relay 12 led13
 // this worked but ofcause no flash
 // Now i made a 8285.bin with flash 1M 64k spiffs and ota it on the device works also led works oke not button
-// now i made a 8266.bin 1M 64K spiffs relay 12 led 13
+// now i made a 8266.bin 1M 64K spiffs relay 12 led 13 that worked
+
+//1 juli 25 i streamelined the wifiportal to ommit a separate hrmal head and many styleelemnts
+// before the .bin was 468 kB hoefully smaller now
