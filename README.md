@@ -15,7 +15,7 @@ The software has some interesting features:
 - a log of the events like 'time, switched-on, by who'<br>
 
 I created this software some years ago, but recently i completely overhauled it. Its more mobile friendly now and the userinterface
-has a lot of improvements.
+has a lot of improvements. Moreover it is compiled with the latest ArduinoIDE version so that the firmware is up to date.
 
 june 16 2025: There is a new version v11 available.
 Download [sonoff_v11,ino.generic.bin](https://github.com/patience4711/SONOFF-SENSOR/blob/main/sonoff-v11.ino.generic.bin)
