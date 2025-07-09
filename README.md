@@ -18,8 +18,14 @@ I created this software some years ago, but recently i completely overhauled it.
 has a lot of improvements. Moreover it is compiled with the latest ArduinoIDE version so that the firmware is up to date.
 
 june 16 2025: There is a new version v11 available.
-Download [sonoff_v11,ino.generic.bin](https://github.com/patience4711/SONOFF-SENSOR/blob/main/sonoff-v11.ino.generic.bin)
+Download [sonoff_v14,ino.generic.bin](https://github.com/patience4711/SONOFF-SENSOR/blob/main/sonoff_v14.ino.bin)
 
 ![frontpage](https://github.com/user-attachments/assets/80ca500e-1aaa-4897-a1f6-de6520d11f89)
 
 This system uses an interesting technique to keep the frontpage up to date. When something hapens at the server (a switch, a sensor reading, the servers sends an event to the client. The client reacts with a data request to update values in the webpage. This way the webinterface does not have to refresh itself every 10 seconds.
+
+# change log
+- compiled with newest ArduinoIDE asnd board definitions
+- Improved and streamlined the file reading functions
+- changed the debug logging to gain more program space
+- cosmetic changes in the webinterface
