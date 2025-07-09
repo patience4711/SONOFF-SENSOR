@@ -21,7 +21,7 @@ bool mqttConnect() {   // MQTT connection (documented way from AutoConnect : htt
     {
      if (MQTT_Client.connect(clientId.c_str() )) 
      {
-          consoleOut("MQTT connection Established with ID : " + String(clientId));
+          consoleOut("MQTT connection Established with ID : " ,0 ,clientId.c_str());
           
           // ... and subscribe, send = MQTTtoRF
           String sub = getChipId(false) + "/in"; //
@@ -35,7 +35,7 @@ bool mqttConnect() {   // MQTT connection (documented way from AutoConnect : htt
           //consoleOut("Connection mqttserver:" + String(mqttBroker));
           //consoleOut("Connection failed:" + String(MQTT_Client.state()));
           String term = "connection failed state: " + String(MQTT_Client.state());
-          consoleOut(term);
+          consoleOut("connection failed state: " , MQTT_Client.state() );
           //Update_Log("mqtt", term);
           if (!--retry)
             break;
@@ -113,7 +113,7 @@ void mqttSwitchupdate()
   //if a sensor is polled we send an update
 
   mqttMess="";
-  StaticJsonDocument<256> doc;
+  JsonDocument doc;
   doc["idx"] = idxSensor;
   doc["nvalue"] = 0;
 

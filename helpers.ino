@@ -17,15 +17,37 @@ void flashErase(AsyncWebServerRequest *request) {
 String getChipId(bool sec) {
   if(sec) return String(ESP.getChipId()); else return "SONOFF-" + String(ESP.getChipId());
 }
-
-// function to show debug info
-void consoleOut(String toLog) {
-// decide to log to serial or the console 
-  if(diagNose) 
-  {
-    Serial.println(toLog);
-  } 
-}
+// this function can be called in several ways
+// Only print a text consoleOut("balabala")
+// print an int value consoleOut ("blabla = ", someInt )
+// consoleOutValue("File = ", 0, bestand);  // bestand is const char*
+// consoleOutValue("Value and file = ", 12, bestand);
+void consoleOut(const char* label, int value , const char* someChar ) 
+{
+  if (diagNose) {
+    char buf[128];
+    if (value == 0 && someChar[0] == '\0') {
+      Serial.println(label);
+    } else if (value != 0 && someChar[0] == '\0') {
+      snprintf(buf, sizeof(buf), "%s %d", label, value);
+      Serial.println(buf);
+    } else if (value == 0 && someChar[0] != '\0') {
+      snprintf(buf, sizeof(buf), "%s %s", label, someChar);
+      Serial.println(buf);
+    } else {
+      snprintf(buf, sizeof(buf), "%s %d %s", label, value, someChar);
+      Serial.println(buf);
+    }
+  }
+} 
+// // function to show debug info
+// void consoleOut(String toLog) {
+// // decide to log to serial or the console 
+//   if(diagNose) 
+//   {
+//     Serial.println(toLog);
+//   } 
+// }
 
 void ledblink(int i, int wait) {
   for (int x = 0; x < i; x++) {

@@ -23,7 +23,7 @@ void zendPageRelevantTimers() {
   //eerst weer de select en keuze terugzetten
   //replace_timerselectbox();
   
-consoleOut("we are at zendPageRelevantTimers, tkeuze = " + String(tKeuze));
+consoleOut("we are at zendPageRelevantTimers, tkeuze = " ,tKeuze);
   plaats_timerpage();  //plaats de timerpage voor de gekozen timer
 }
 

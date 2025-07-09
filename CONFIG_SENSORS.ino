@@ -168,7 +168,7 @@ toSend += FPSTR(SENSORCONFIG_START);
     //toSend.replace("HANSIART" , String(dvName)); 
 
     consoleOut("zendPageRelevantSensors");
-    consoleOut("tKeuze = " + String(tKeuze));
+    consoleOut("tKeuze = " , tKeuze);
     // we gaan nu de gegevens in de getoonde pagina goed ztten, afhankelijk van tKeuze  
     place_sensorpage();
   
@@ -185,7 +185,7 @@ void place_sensorpage() {
     if (tKeuze == 11) {
     // thermostaat 
         toSend.replace("<irame name>" , FPSTR(SENSOR_TS)); 
-        consoleOut("switchTemp = " + String(switchTemp));
+        consoleOut("switchTemp = " , (int)switchTemp);
 
         // show the thermometer readings
         if (senSor == 1 || senSor == 2 || senSor == 3) {

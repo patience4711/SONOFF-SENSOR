@@ -56,7 +56,7 @@ sun_setrise(); // calculate first sunset and rise
 //DebugPrint(now());
 //DebugPrintln("");
  // we calculate unixtime at 00:00 today
-tmElements_t myElements = {0, 0, 0, 0, day(), month(), (year()-1970)};
+tmElements_t myElements = {0, 0, 0, 0, (uint8_t)day(), (uint8_t)month(), (uint8_t)(year()-1970)};
 dagbegintijd = makeTime(myElements);
 //DebugPrint("daystart in unixtime: ");
 //DebugPrint(dagbegintijd);
@@ -95,7 +95,7 @@ void timercalc(int nummer) { // begint bij 0
 // no need to check that
 
 // als weekday() + 0*7 -1 (dat is sun=1 dus di =3 -1 = 2
-consoleOut ("calculate timer " + String(nummer));
+consoleOut ("calculate timer " , nummer);
 //DebugPrintln(nummer);
 //DebugPrint("weekday + nummer*7 -1 = "); DebugPrintln(String(weekday() -1 + nummer*7));
 

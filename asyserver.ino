@@ -173,7 +173,7 @@ server.on("/STARTAP", HTTP_GET, [](AsyncWebServerRequest *request) {
         //consoleOut("erase the wifi data");
         String toSend = F("<!DOCTYPE html><html><style>body {font-size:44px;}</style><head><script type='text/javascript'>setTimeout(function(){ window.location.href='/'; }, 5000 ); </script>");
         toSend += F("</head><body><center><h3>OK the accesspoint is started.</h3>Wait unil the led goes on.<br><br>Then go to the wifi-settings on your pc/phone/tablet and connect to ");
-        toSend += getChipId(false) + " !";
+        toSend += String(dvName) + " !";
         request->send ( 200, "text/html", toSend ); //zend confirm
         actionFlag = 11;
         
@@ -245,7 +245,7 @@ server.on("/get.Homepagedata", HTTP_GET, [](AsyncWebServerRequest *request) {
     // 1 = DS18B20 2 = dht11 3 bme280 4=motion 5=button 6=MAX44009 7=digital
     AsyncResponseStream *response = request->beginResponseStream("application/json");
     //StaticJsonDocument<160> doc; //(160);
-    DynamicJsonDocument root(240); //(160);
+    JsonDocument root; //(160);
 
  
 // float humidity, temp_f, temp_c;

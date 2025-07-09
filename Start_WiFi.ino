@@ -24,7 +24,7 @@ int event = 0;
      start_portal(); // stel het portal in
      }
   event=0; // we kunnen door naar de rest
-  consoleOut("wifi connected, ip = ");
+  Serial.print("\nwifi connected, ip = ");
   Serial.println(WiFi.localIP());
 
   

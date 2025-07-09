@@ -153,8 +153,8 @@ if (networksFound == 0) {
       // can we do this with only one scan at the first time the portal was started?
       consoleOut("make a list of found networks");
       String lijst = makeList(networksFound);
-      consoleOut("lijst = "); 
-      consoleOut(lijst);
+      consoleOut("lijst = " ,0 , lijst.c_str()); 
+      //consoleOut(lijst);
     toSend.replace("aplijst", lijst);  
     }
 
@@ -224,8 +224,8 @@ bool wifiConnect() {
 
       WiFi.mode(WIFI_AP_STA);
       delay(500);
-      consoleOut("Connecting to " + String(ssid));
-      consoleOut("password =  " + String(pass));
+      consoleOut("Connecting to " ,0 ,ssid);
+      consoleOut("password =  " ,0 , pass);
 
       if (connectWifi() == 1) {
          ledblink(3, 200); 
@@ -328,7 +328,7 @@ String makeList(int aantal) { // aantal is het aantal gevonden netwerken
         String rssiQ;
         //int quality = (WiFi.RSSI(i));
         int quality = WiFi.RSSI(indices[i]);
-        consoleOut("quality = " + String(quality));
+        consoleOut("quality = " , quality);
         // -50 is groter dan -80
         if (quality < -99){ continue; } // skip als kleiner dan -65 bijv -66
 //        item.replace("{v}", WiFi.SSID(i));

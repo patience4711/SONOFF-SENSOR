@@ -64,7 +64,7 @@ toSend += "force measuring and switch by the sensor <a href='/METEN'><button sty
 
 toSend += "firmware version : ";
 #ifdef SENSORS
-toSend += "Sonoff-v13_SENSORS<br>";
+toSend += "Sonoff-v14_SENSORS<br>";
 //#endif
 //#ifdef ESP01_FET
 //toSend += "ESP01-v10_0_FET<br>";

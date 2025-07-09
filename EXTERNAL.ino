@@ -10,7 +10,7 @@ bool checkRemote(String url) {
 void handleNotFound(AsyncWebServerRequest *request) {
   
 String serverargument = request->url().c_str();
-consoleOut("HandleNotFound argument = " + String(serverargument));
+consoleOut("HandleNotFound argument = " , 0, serverargument.c_str() );
 // if the client is remote he can't do anything
 bool intern = false;
 if(!checkRemote( request->client()->remoteIP().toString()) ) intern = true;

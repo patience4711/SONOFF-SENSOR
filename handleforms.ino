@@ -81,7 +81,7 @@ void handleForms(AsyncWebServerRequest *request) {
              switchOff[tKeuze*5+i] = tempChar[i];
           }      
           // put the values of the days in an array
-          char *grap[] = {"su", "mo", "tu", "we", "th", "fr", "sa"};
+          const char *grap[] = {"su", "mo", "tu", "we", "th", "fr", "sa"};
           String wd = ""; 
           for (int x = 0; x < 7; x++) {
           // the checkbox only has a parameter when checked
